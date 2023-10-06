@@ -1,0 +1,90 @@
+<h1 align="center">Use Case Specifications</h1>
+Use Case ID: UC001
+Use Case Name: Login/Logout
+Relevant Requirements: Valid username and password.
+Primary Actor: User
+Pre-conditions:
+The system is operational and accessible.
+The user registration is complete and authentic usernames and passwords have been saved.
+Post-conditions:
+After successfully logging in, the user has access to all the features.
+Logging out brings back the user to the starting position. 	
+Basic Flow or Main Scenario:
+The user opens the application.
+A login screen is displayed by the system.
+The user enters their login information.
+The system verifies the credentials.
+The user is successfully signed in if the username and password match an entry in the database.
+The system displays an error notice if the credentials are incorrect.
+The user has access to content or features that are limited if they are logging in.
+The user decides to logout.
+The system locks the user out and reloads the login page.
+Extensions or Alternate Flows:
+Invalid credentials
+The system displays an error notice and allows the User to re-enter the information if the user enters an invalid credential. 
+Exceptions:
+ System Unavailability
+The user cannot log in if the system is down or unavailable. It shows an error message.
+Related Use Cases:
+UC002: Access Bank Information
+UC003: Playing the game
+
+ 
+ 
+Use Case ID: UC002
+Use Case Name: Access Bank Information
+Relevant Requirements: A valid bank account with sufficient funds.
+Primary Actor: Player
+Pre-conditions: 
+Player profile exists in program database
+The player is logged into the corresponding player account
+Post-conditions:	
+The player has access to their account balance and transaction history.
+Options to deposit and withdraw funds are presented.
+Basic Flow or Main Scenario:	
+The player is at the program’s main menu.
+Player requests to view their fund information.
+System pulls bank account information from the player object.
+The system displays the bank account balance, along with options to deposit and withdraw.
+Extensions or Alternate Flows:	
+Player requests to deposit funds.
+System prompts the user to enter the card information or to choose a previously used payment method.
+The user chooses a payment method.
+The user selects the fund amount to transfer.
+The system transfers funds from the payment method into the player's account information.
+Player requests to withdraw funds.
+System prompts the user to select which payment method to transfer funds into.
+User selects method.
+The system transfers funds from player account information into a selected transfer method.
+Exceptions:
+Related Use Cases:
+UC001: Login/Logout
+UC003: Playing the game
+	 
+
+ 
+ 
+
+
+
+Use Case ID: UC003
+Use Case Name: Playing the game
+Relevant Requirements: All players must have sufficient funds to play a game. 
+Primary Actor: Player, Dealer
+Pre-conditions:
+1. An authenticated player account with sufficient funds is ready to play a game.
+Post-conditions:
+1.  The player either wins or loses their wager and a new round begins. 
+Basic Flow or Main Scenario:
+The player(s) sets a wager for the round.	
+The dealer deals out cards.
+Each player’s hand is summed. Those with sums exceeding 21 “bust” and lose the round. Those still in play will have their sums compared to the sum of the dealer’s hand. Players with a higher sum than the dealer’s are declared winners, those with sums lower than the dealer, lose. 
+Losers will lose their wager, and winners are rewarded with winnings. 
+The next round is ready to begin but the system verifies that each player has sufficient funds before it starts. 
+The process repeats
+Extensions or Alternate Flows: 
+Exceptions: 
+The player is attempting to continue playing another round while having insufficient funds. 
+Related Use Cases:
+USC001 Login/Logout
+USC002 Access Bank information
