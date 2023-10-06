@@ -1,4 +1,10 @@
-# Multiplayer BlackJack Game <a href="https://www.flaticon.com/free-icons/blackjack" title="blackjack icons">Blackjack icons created by max.icons - Flaticon</a>
-Multi-Player BlackJack Java Application with TCP/IP GUI
-![image](https://github.com/syedanida/CS-401-Group-2-Blackjack/assets/60160145/2b0c4c95-97e8-4a0a-8548-56f97758edcb)
+<h1 align="center">Multiplayer BlackJack Game 🃏</h1>
+
+<h3 align="center">Multi-Player BlackJack Java Application with TCP/IP GUI.</h3>
+
+<p align="center">
+  <img width="800" height="600" src="https://i.pinimg.com/564x/b6/90/d6/b690d65332b2e21921585bd3e17df54a.jpg">
+</p>
+
+
 
