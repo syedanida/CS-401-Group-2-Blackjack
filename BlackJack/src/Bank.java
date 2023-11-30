@@ -29,7 +29,7 @@ public class Bank {
 		playerAccounts[getNumberOfAccounts()] = account;
 
 		// Increment the counter for the number of accounts
-		// incrementNumOf
+		// incrementNumOfAccounts();
 
 	}
 
@@ -71,6 +71,7 @@ public class Bank {
 		return count;
 	}
 
+	// Method to resize the array
 	private void resizeAccountsArray() {
 		int newCapacity = playerAccounts.length * 2;
 		Player[] newPlayerAccount = new Player[newCapacity];
@@ -80,6 +81,7 @@ public class Bank {
 		playerAccounts = newPlayerAccount;
 	}
 
+	// Method to shuft accounts
 	private void shiftAccounts(int startIndex) {
 		for (int i = startIndex; i < playerAccounts.length - 1; i++) {
 			playerAccounts[i] = playerAccounts[i + 1];
