@@ -29,7 +29,7 @@ public class Bank {
 		playerAccounts[getNumberOfAccounts()] = account;
 
 		// Increment the counter for the number of accounts
-		// incrementNumOfAccounts();
+		// incrementNumOf
 
 	}
 
