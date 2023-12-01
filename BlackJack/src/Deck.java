@@ -56,4 +56,14 @@ public class Deck {
 		}
 	}
 
+	public int getNumCards() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void remove(int cardNum) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

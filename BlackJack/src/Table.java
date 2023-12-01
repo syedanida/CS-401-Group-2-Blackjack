@@ -65,7 +65,15 @@ public class Table {
 		
 		// Each player is given a turn to hit/stand
 		for(int i = 0; i < currentPlayers; i++) {
-			playerTurn(players.get(i)); 
+			try {
+				playerTurn(players.get(i));
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 	
 		}
 		
@@ -126,6 +134,14 @@ public class Table {
 	
 	
 	
+	private void drawCard(Dealer dealer2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
 	public void playerTurn(CardPlayer player) throws IOException, ClassNotFoundException { // Each player will hit/stand using this method
 
 		// send update to the clients
@@ -232,5 +248,13 @@ public class Table {
 				}
 			}
 		}
+	}
+
+
+
+
+	public boolean isFull() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
