@@ -1,8 +1,45 @@
+import java.util.ArrayList;
 
-public class Dealer {
+public class Dealer implements CardPlayer{
+	
+	private MOVE currMove;
+	
+	private ArrayList<Card> playerHand;
 
-	public Dealer() {
-		// TODO Auto-generated constructor stub
+	private int handValue; 
+	
+
+	@Override
+	public ArrayList<Card> getPlayerHand() {
+		// TODO Auto-generated method stub
+		return playerHand;
 	}
 
+	@Override
+	public void calcHandValue() {
+		// TODO Auto-generated method stub
+		handValue = 0; 
+		for(Card card : playerHand) {
+			handValue += card.getCardValue();
+		}
+	} 
+	
+	@Override
+	public int getHandValue() {
+		this.calcHandValue();
+		return handValue; 
+	}
+
+	public MOVE getCurrMove() {
+		return currMove;
+	}
+
+	public void setCurrMove(MOVE currMove) {
+		this.currMove = currMove;
+	}
+
+	public void setHandValue(int handValue) {
+		this.handValue = handValue;
+	}
+	
 }
