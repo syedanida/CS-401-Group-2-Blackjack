@@ -34,6 +34,13 @@ public class Player implements CardPlayer{
 		
 	}
 	
+	public Player(String userID, String userPassword, String userName, int userBalance) {
+		id = userID;
+		password = userPassword;
+		displayName = userName;
+		balance = userBalance;
+	}
+
 	public void deposit(int amount) {
 		balance += amount; 
 	}
@@ -111,6 +118,10 @@ public class Player implements CardPlayer{
 
 	public void setSocket(Socket socket) {
 		this.socket = socket;
+	}
+
+	public Object getPassword() {
+		return password;
 	}
 	
 
