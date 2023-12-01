@@ -1,4 +1,3 @@
-
 public class Bank {
 
 	private double balance;
