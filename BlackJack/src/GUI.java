@@ -22,18 +22,23 @@ public class GUI
 	private String loginUserText;
 	private String loginPassText;
 	
+	private JPanel testPanel = new JPanel();
 	private JPanel menuPanel = new JPanel();
+	private JPanel tablePanel = new JPanel();
 
 	public GUI(Client listener) 
 	{
 		this.listener = listener;
 		// Sets up main panel content
 		this.contentPanel.setLayout(cl);
+		this.contentPanel.add(testPanel, "test");
 		this.contentPanel.add(loginPanel, "welcome");
 		this.contentPanel.add(menuPanel, "menu");
-		this.cl.show(contentPanel, "welcome");
+		this.cl.show(contentPanel, "test");
 		
 		// Sets up pages (row, col)
+		initializeTestPanel();
+		System.out.println("test page created");
 		initializeLoginPanel(2, 1);
 		System.out.println("login page created");
 		initializeMenuPanel();
@@ -176,7 +181,8 @@ public class GUI
 	
 	public void initializeMenuPanel() 
 	{
-		menuPanel.setBackground(Color.BLUE);
+		menuPanel.setBackground(new Color(0, 100, 0));
+		menuPanel.setLayout(new GridBagLayout());
 		JButton testButton = new JButton("Test");
 		menuPanel.add(testButton);
 		testButton.addActionListener(new ActionListener() {
@@ -188,11 +194,47 @@ public class GUI
 		});
 	}
 	
-	public void closeConnection() throws IOException {
+	public void closeConnection() throws IOException 
+	{
 		listener.guiExit();
 		//System.exit(0);
 	}
 	
-	
+	public void initializeTestPanel() 
+	{
+		
+		
+		JLabel layerA = new JLabel();
+		layerA.setBackground(Color.red);
+		layerA.setOpaque(true);
+		layerA.setBounds(0, 0, 400, 400);
+		
+		JLabel layerB = new JLabel();
+		layerB.setBackground(Color.green);
+		layerB.setOpaque(true);
+		layerB.setBounds(100, 100, 400, 400);
+		
+		JLabel layerC = new JLabel();
+		layerC.setBackground(Color.blue);
+		layerC.setOpaque(true);
+		layerC.setBounds(200, 200, 400, 400);
 
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0,0, 800, 800);
+		
+		layeredPane.add(layerA, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(layerB, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(layerC, JLayeredPane.DEFAULT_LAYER);
+		
+		testPanel.add(layeredPane);
+		testPanel.setLayout(null);
+		
+		
+		
+		this.contentPanel.repaint();
+		this.contentPanel.revalidate();
+		
+		
+	}
+	
 }

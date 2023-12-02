@@ -75,7 +75,8 @@ public class Client implements GUIListener{
 	
 	public void guiExit() throws IOException {
 		System.out.println("Closing client");
-		socket.close();
+//		socket.close();
+		System.exit(0);
 	}
 	
 	public static void main(String[] args) {
