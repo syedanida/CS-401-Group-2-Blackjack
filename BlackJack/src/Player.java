@@ -5,21 +5,13 @@ public class Player implements CardPlayer{
 	private static int idCounter = 0; 
 	
 	private String id; 
-	
 	private String displayName; 
-	
 	private String password;
-	
 	private int balance; 
-	
 	private int currWager; 
-	
 	private MOVE currMove;
-	
 	private ArrayList<Card> playerHand; 
-	
 	private int handValue; 
-	
 	private Socket socket; 
 	
 	public Player(){
@@ -27,12 +19,12 @@ public class Player implements CardPlayer{
 		playerHand = new ArrayList<>(); 
 	}
 	
-	public Player(String name, String pass, int bal) {
-		id = Integer.toString(idCounter++);
-		displayName = name; 
-		password = pass; 
-		// balance = some minimum value to start off
-		balance = bal; 
+	public Player(String id, String password, String displayName, int balance) {
+//		id = Integer.toString(idCounter++);
+		this.id = id;
+		this.displayName = displayName;
+		this.password = password;
+		this.balance = balance;				// balance = some minimum value to start off
 		playerHand = new ArrayList<>(); 
 		
 	}

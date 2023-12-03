@@ -35,9 +35,9 @@ public class GUI
 		this.listener = listener;
 		// Sets up main panel content
 		contentPanel.setLayout(cl);
-		//this.contentPanel.add(testPanel, "test");
-		//this.contentPanel.add(loginPanel, "welcome");
-		//this.contentPanel.add(menuPanel, "menu");
+//		this.contentPanel.add(testPanel, "test");
+//		this.contentPanel.add(loginPanel, "welcome");
+//		this.contentPanel.add(menuPanel, "menu");
 		contentPanel.add(tablePanel, "table");
 		cl.show(contentPanel, "table");
 		
@@ -224,6 +224,7 @@ public class GUI
 	{
 		JPanel panel = new JPanel();
 		
+		int cards = 0;
 		
 	}
 	

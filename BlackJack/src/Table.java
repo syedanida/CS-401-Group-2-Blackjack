@@ -6,13 +6,9 @@ import java.util.*;
 public class Table {
 	
 	private int id; // might be needed for keeping track of each game
-	
 	private ArrayList<Player> players; 
-	
 	private ArrayList<Deck> decks; 
-	
 	private Dealer dealer; 
-	
     private int currentPlayers;
    
 //    Map<Player,ObjectOutputStream> outStreams; <-- For GUI

@@ -38,9 +38,7 @@ public class Card {
 		
 		// setting up the backside of the cards
 		ImageIcon img = new ImageIcon("data/cardImages/Back Red 1.png"); // path for the image
-		
 		Image resizedImage = img.getImage().getScaledInstance(75,100,Image.SCALE_SMOOTH); // rescaled size
-		
 		this.cardBack = new ImageIcon(resizedImage);// Assign image for back of the card
 
 	}
