@@ -1,9 +1,8 @@
-// Enum representing the four suits in a standard deck of cards
-
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
+//Enum representing the four suits in a standard deck of cards
 enum Suit {
 	CLUBS, DIAMONDS, HEARTS, SPADES
 }
@@ -26,12 +25,14 @@ public class Card {
 		// Ensures J, Q, K, do not exceed value 10
 		if (cardNum > 10) {
 			this.value = 10;
+		} else if (cardNum == 1) {
+			this.value = 11; // default Ace value
 		} else {
-
 			this.value = cardNum;
 		}
 
 		this.cardFront = loadFrontsideImage();
+		this.cardBack = loadBacksideImage();
 
 		// setting up the backside of the cards
 		// path for the image
@@ -76,6 +77,16 @@ public class Card {
 		Image resizedImage = img.getImage().getScaledInstance(75, 100, Image.SCALE_SMOOTH);
 
 		// consider a default image
+		return new ImageIcon(resizedImage);
+	}
+
+	private ImageIcon loadBacksideImage() {
+
+		ImageIcon img = new ImageIcon("PATH"); // ---> change to respective path
+
+		Image resizedImage = img.getImage().getScaledInstance(75, 100, Image.SCALE_SMOOTH);
+
+		// Return the ImageIcon for the back of the card
 		return new ImageIcon(resizedImage);
 	}
 
