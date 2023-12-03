@@ -164,13 +164,16 @@ public class Table {
 	}
 
 	public boolean needToshuffle() {
-		int totalCardsRemaining = decks.stream().mapToInt(deck -> deck.getCards().size()).sum();
+		int totalCardsRemaining = 0;
+		for (int i = 0; i < decks.size(); i++) {
+			totalCardsRemaining += decks.get(i).getCards().size();
+		}
 		return totalCardsRemaining < (52 * decks.size() / 2);
 	}
 
 	public void shuffleDecks() {
-		for (Deck deck : decks) {
-			deck.shuffle();
+		for (int i = 0; i < decks.size(); i++) {
+			decks.get(i).shuffle();
 		}
 	}
 
