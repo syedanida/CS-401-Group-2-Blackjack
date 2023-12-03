@@ -26,10 +26,6 @@ public class Bank {
 
 		// Add the new account to the array
 		playerAccounts[getNumberOfAccounts()] = account;
-
-		// Increment the counter for the number of accounts
-		// incrementNumOfAccounts();
-
 	}
 
 	// Method to delete a player from the bank
@@ -41,8 +37,6 @@ public class Bank {
 			playerAccounts[index] = null;
 
 			shiftAccounts(index);
-
-			// decrementNumOfAccounts();
 		}
 	}
 
@@ -80,7 +74,7 @@ public class Bank {
 		playerAccounts = newPlayerAccount;
 	}
 
-	// Method to shuft accounts
+	// Method to shift accounts
 	private void shiftAccounts(int startIndex) {
 		for (int i = startIndex; i < playerAccounts.length - 1; i++) {
 			playerAccounts[i] = playerAccounts[i + 1];
