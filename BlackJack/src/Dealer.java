@@ -1,110 +1,52 @@
 import java.util.ArrayList;
 
-public class Dealer implements CardPlayer{
-	
-	private MOVE currMove;
-	
-	private ArrayList<Card> playerHand;
+public class Dealer implements CardPlayer {
 
-	private int handValue; 
-	
-	
+	private MOVE currMove;
+	private ArrayList<Card> playerHand;
+	private int handValue;
+
 	public Dealer() {
-		playerHand= new ArrayList<>(); 
-		handValue = 0; 
+		playerHand = new ArrayList<>();
+		handValue = 0;
 	}
 
-	@Override
 	public ArrayList<Card> getPlayerHand() {
-		// TODO Auto-generated method stub
 		return playerHand;
 	}
 
-	@Override
 	public void calcHandValue() {
-		// TODO Auto-generated method stub
-		handValue = 0; 
-		for(Card card : playerHand) {
+		handValue = 0;
+		int numAces = 0;
+
+		for (int i = 0; i < this.getPlayerHand().size(); i++) {
+			Card card = this.getPlayerHand().get(i);
 			handValue += card.getCardValue();
+
+			if ("Ace".equals(card.getCardRank()) && card.getCardValue() == 11) {
+				numAces++;
+			}
 		}
-	} 
-	
-	
-	
-	@Override
+		while (handValue > 21 && numAces > 0) {
+			handValue -= 10;
+			numAces--;
+		}
+	}
+
 	public int getHandValue() {
 		this.calcHandValue();
-		return handValue; 
+		return handValue;
 	}
-	@Override
+
 	public MOVE getCurrMove() {
 		return currMove;
 	}
-	@Override
+
 	public void setCurrMove(MOVE currMove) {
 		this.currMove = currMove;
 	}
-	
+
 	public void setHandValue(int handValue) {
 		this.handValue = handValue;
 	}
-	
-	
-	
-	
 }
-
-
-
-
-
-
-
-
-
-
-//import java.util.ArrayList;
-//
-//public class Dealer implements CardPlayer{
-//	
-//	private MOVE currMove;
-//	
-//	private ArrayList<Card> playerHand;
-//
-//	private int handValue; 
-//	
-//
-//	@Override
-//	public ArrayList<Card> getPlayerHand() {
-//		// TODO Auto-generated method stub
-//		return playerHand;
-//	}
-//
-//	@Override
-//	public void calcHandValue() {
-//		// TODO Auto-generated method stub
-//		handValue = 0; 
-//		for(Card card : playerHand) {
-//			handValue += card.getCardValue();
-//		}
-//	} 
-//	
-//	@Override
-//	public int getHandValue() {
-//		this.calcHandValue();
-//		return handValue; 
-//	}
-//
-//	public MOVE getCurrMove() {
-//		return currMove;
-//	}
-//
-//	public void setCurrMove(MOVE currMove) {
-//		this.currMove = currMove;
-//	}
-//
-//	public void setHandValue(int handValue) {
-//		this.handValue = handValue;
-//	}
-//	
-//}
