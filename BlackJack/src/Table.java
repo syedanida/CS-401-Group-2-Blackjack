@@ -213,6 +213,7 @@ public class Table {
 				String moveInput = scanner.nextLine();
 				participant.setCurrMove(MOVE.valueOf(moveInput.toLowerCase()));// set the move
 			}
+
 			// Process participant's decisions
 			if (participant.getCurrMove() == MOVE.hit) {
 				drawCard(participant);
@@ -224,7 +225,7 @@ public class Table {
 				System.out.println("\nEnd of Turn, Final Hand Value: " + participant.getHandValue());
 				endTurn = true;
 			}
-//				sendGameState(); 
+			// sendGameState();
 		}
 
 	}
