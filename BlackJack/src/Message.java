@@ -5,10 +5,10 @@ public class Message implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// Types of Messages
-	public enum MessageType {
-		LOGIN, LOGOUT, FIND_TABLE, BANK_DETAILS, SETTINGS, DEPOSIT, WITHDRAW, CHANGE_NAME, CHANGE_PASSWORD,
-		DELETE_ACCOUNT
-	}
+//	public enum MessageType {
+//		LOGIN, LOGOUT, FIND_TABLE, BANK_DETAILS, SETTINGS, DEPOSIT, WITHDRAW, CHANGE_NAME, CHANGE_PASSWORD,
+//		DELETE_ACCOUNT, WAGER, QUIT
+//	}
 
 	// Common Fields
 	private MessageType type;
@@ -20,7 +20,7 @@ public class Message implements Serializable {
 	private String newPassword;
 	private double depositAmount;
 	private double withdrawAmount;
-
+	
 	// Constructors for different message types
 	public Message(MessageType type, String userId, String password) {
 		this.type = type;

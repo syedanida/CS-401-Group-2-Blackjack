@@ -1,7 +1,14 @@
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+
+import Message.MessageType;
 
 public class Table {
 
@@ -10,7 +17,10 @@ public class Table {
 	private ArrayList<Deck> decks;
 	private Dealer dealer;
 	private int currentPlayers;
-	// Map<Player,ObjectOutputStream> outStreams; <-- For GUI
+	
+	// for gui input/output
+	 Map<String,ObjectOutputStream> outputStreams;
+	 Map<String, ObjectInputStream> inputStreams; 
 
 	// for console
 	private Scanner scanner = new Scanner(System.in);
@@ -25,6 +35,10 @@ public class Table {
 		}
 		dealer = new Dealer();
 		currentPlayers = 0;
+		
+		// Set up streams for network comms
+		outputStreams = new HashMap<>(); 
+		inputStreams = new HashMap<>(); 
 
 		// Shuffle the decks at the beginning of each round
 		shuffleDecks();
@@ -40,12 +54,37 @@ public class Table {
 			if (currentPlayers == 0) {
 				currentPlayers++;
 			}
+			// Create new input and output streams for network comms to client
+			try {
+				ObjectOutputStream outStream = new ObjectOutputStream(newPlayer.getSocket().getOutputStream()); 
+				ObjectInputStream instream = new ObjectInputStream(newPlayer.getSocket().getInputStream()); 
+				// add to lists of streams
+				outputStreams.put(newPlayer.getId(), outStream); 
+				inputStreams.put(newPlayer.getId(),instream); 
+				
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
-		// Add a socket to the map of Map<Player,Sockets> once ready for gui
-		// communication
+		
 	}
 
 	public void removePlayer(Player player) {
+		try {
+			// Maybe a goodbye before removal
+			
+			// Close streams
+			outputStreams.get(player.getId()).close(); 
+			inputStreams.get(player.getId()).close();
+			
+			// remove streams from map
+			outputStreams.remove(player.getId()); 
+			inputStreams.remove(player.getId()); 
+			
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 		players.remove(player);
 		currentPlayers--;
 	}
@@ -90,52 +129,90 @@ public class Table {
 	}
 
 	public void RoundOfBlackJack() throws ClassNotFoundException, IOException {
-		for (int i = 0; i < currentPlayers; i++) {
-			// check the balances for minimum wager required
-			// if balance is low, notify player
-			if (players.get(i).getBalance() < 500) {
-				System.out.println("\nYour balance is too low");
+		try {
+			for (int i = 0; i < currentPlayers; i++) {
+				// check the balances for minimum wager required
+				// if balance is low, notify player
+				if (players.get(i).getBalance() < 500) {
+					System.out.println("\nYour balance is too low");
+				}
+
+				int wager;
+//				GameMessage msg = new GameMessage(MessageType.WAGER); 
+//				outputStreams.get(players.get(i).getId()).writeObject(msg);
+//				
+				do {
+					// Players input a valid wager amount
+					System.out.println("\nEnter wager amount: ");
+					wager = scanner.nextInt();
+					players.get(i).setCurrWager(wager);
+					if (wager > players.get(i).getBalance()) {
+						System.out.println("\nInsufficient balance\n");
+					}
+				} while (wager > players.get(i).getBalance());
+				// clear buffer
+				scanner.nextLine();
 			}
 
-			int wager;
+			// deal cards to each player
+			dealHands();
 
-			do {
-				// Players input a valid wager amount
-				System.out.println("\nEnter wager amount: ");
-				wager = scanner.nextInt();
-				players.get(i).setCurrWager(wager);
-				if (wager > players.get(i).getBalance()) {
-					System.out.println("\nInsufficient balance\n");
-				}
-			} while (wager > players.get(i).getBalance());
-			// clear buffer
-			scanner.nextLine();
+			// Give each player a turn
+			for (int i = 0; i < currentPlayers; i++) {
+				System.out.println("\n" + players.get(i).getDisplayName() + "'s Turn");
+				playerTurn(players.get(i));
+			}
+
+			// Dealer's turn
+			System.out.println("\nDealer's Turn");
+			playerTurn(dealer);
+
+			// Pay winnings to winners, take wagers from losers
+			distributeWinnings();
+		}catch(IOException e) {
+			
 		}
-
-		// deal cards to each player
-		dealHands();
-
-		// NOTE: Consider the value of Ace cards when drawn 1/11, maybe have two
-		// handValues or ask player to choose
-
-		// Give each player a turn
-		for (int i = 0; i < currentPlayers; i++) {
-			System.out.println("\n" + players.get(i).getDisplayName() + "'s Turn");
-			playerTurn(players.get(i));
-		}
-
-		// Dealer's turn
-		System.out.println("\nDealer's Turn");
-		playerTurn(dealer);
-
-		// Pay winnings to winners, take wagers from losers
-		distributeWinnings();
+// FROM THE CONSOLE VERSION
+//		for (int i = 0; i < currentPlayers; i++) {
+//			// check the balances for minimum wager required
+//			// if balance is low, notify player
+//			if (players.get(i).getBalance() < 500) {
+//				System.out.println("\nYour balance is too low");
+//			}
+//
+//			int wager;
+//
+//			do {
+//				// Players input a valid wager amount
+//				System.out.println("\nEnter wager amount: ");
+//				wager = scanner.nextInt();
+//				players.get(i).setCurrWager(wager);
+//				if (wager > players.get(i).getBalance()) {
+//					System.out.println("\nInsufficient balance\n");
+//				}
+//			} while (wager > players.get(i).getBalance());
+//			// clear buffer
+//			scanner.nextLine();
+//		}
+//
+//		// deal cards to each player
+//		dealHands();
+//
+//		// Give each player a turn
+//		for (int i = 0; i < currentPlayers; i++) {
+//			System.out.println("\n" + players.get(i).getDisplayName() + "'s Turn");
+//			playerTurn(players.get(i));
+//		}
+//
+//		// Dealer's turn
+//		System.out.println("\nDealer's Turn");
+//		playerTurn(dealer);
+//
+//		// Pay winnings to winners, take wagers from losers
+//		distributeWinnings();
 	}
 
 	public void drawCard(CardPlayer player) {
-		// NOTE: Consider the value of aces, give player a choice or handle
-		// automatically?
-
 		// Checking if we need to shuffle the decks
 		if (needToshuffle()) {
 			shuffleDecks();
@@ -292,26 +369,15 @@ public class Table {
 	// NOTE FOR LATER: Nested for loops
 
 	// sends updated information through network to the GUI on client side
-//	public void sendGameState() throws IOException {
-//		ObjectOutputStream objOutStream = null; 
-//		for(int i = 0; i < currentPlayers; i++) {
-//			try {
-//				Player player = players.get(i); 
-//				objOutStream = new ObjectOutputStream(player.getSocket().getOutputStream());
-//				
-//				// Send the status of player after every move
-//				objOutStream.writeObject("Name: " + player.getDisplayName() );
-//				objOutStream.writeObject("Hand Value: " + Integer.toString(player.getHandValue()));
-//				objOutStream.writeObject("Current Move: " + player.getCurrMove().name());
-//				objOutStream.writeObject("Wager: $" + Integer.toString(player.getCurrWager()));
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}finally {
-//				if(objOutStream != null) {
-//					objOutStream.close(); 
-//				}
-//			}
-//		}
-//	}
+	public void sendGameState() throws IOException {
+		for(Player player : players) {
+			for(int i = 0; i < currentPlayers; i++) {
+				try {
+					//outputStreams.get(players.get(i).getId()).writeObject(players.get(i).getPlayerHand());
+				}catch(IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }
