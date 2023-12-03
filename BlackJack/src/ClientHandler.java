@@ -1,15 +1,12 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
 
 public class ClientHandler implements Runnable {
 
     private Socket clientSocket;
     private Server server;
-    private BufferedReader input;
-    private PrintWriter output;
+    private ObjectOutputStream outputStream;
+    private ObjectInputStream inputStream;
     private Player player;
 
     public ClientHandler(Socket clientSocket, Server server) {
@@ -17,8 +14,8 @@ public class ClientHandler implements Runnable {
         this.server = server;
 
         try {
-            input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            output = new PrintWriter(clientSocket.getOutputStream(), true);
+        	outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+            inputStream = new ObjectInputStream(clientSocket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -27,121 +24,198 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
+        	// Continuously handle client messages
+        	// Read and deserialize the message from the client
+        	Message receivedMessage = (Message) inputStream.readObject();
+        	
+        	handleLogin(receivedMessage);
+            while (true) {
+            	
+            	Message clientMessage = (Message) inputStream.readObject();
+                // Process the received message
+                processMessage(clientMessage);
+            }
             // Handle the client connection
-            handleClient();
+            //handleClient();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        } catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
             // Ensure resources are properly closed
             closeResources();
         }
     }
 
-    private void handleClient() throws IOException {
-        // Read and deserialize the message from the client
-        String serializedMessage = input.readLine();
-        Message receivedMessage = MessageDeserializer.deserialize(serializedMessage);
-
-        // Process the received message
-        processMessage(receivedMessage);
-    }
+//    private void handleClient() throws IOException {
+//        // Read and deserialize the message from the client
+//        String serializedMessage = input.readLine();
+//        Message receivedMessage = MessageDeserializer.deserialize(serializedMessage);
+//
+//        // Process the received message
+//        processMessage(receivedMessage);
+//    }
 
     private void processMessage(Message message) throws IOException {
+    	 if (message == null) {
+    		 outputStream.writeObject("Invalid message received.");
+    	        return;
+    	    }
+    	 boolean loggedin = true;
+    	 while (loggedin = true) {
+    	 
         switch (message.getType()) {
-            case LOGIN:
-                handleLogin(message);
-                break;
+//            case LOGIN:
+//                handleLogin(message);
+//                break;
             case FIND_TABLE:
+            	System.out.println("calling findtable case");
                 handleFindTable(message);
                 break;
             case BANK_DETAILS:
-                handleBankDetails(message);
+            	System.out.println("calling bankdetails case");
+                handleBankDetails();
                 break;
             case SETTINGS:
+            	System.out.println("calling settings case");
                 handleSettings(message);
                 break;
-            case LOGOUT:
+            case LOGOUT: {
                 handleLogout(message);
+                loggedin = false;
                 break;
+            }
             default:
-                output.println("Invalid message type.");
+            	outputStream.writeObject("Invalid message type.");
         }
     }
+    }
 
-    private void handleLogin(Message message) throws IOException {
+    private boolean handleLogin(Message message) throws IOException {
         String userId = message.getUserId();
         String password = message.getPassword();
+        boolean success = false;
 
         if (server.verifyCredentials(userId, password)) {
             player = server.getPlayer(userId);
-            output.println("Authentication successful. You are now connected.");
-
-            // Handle user options
-            handleUserOptions();
+            outputStream.writeObject("Authentication successful. You are now connected.");
+            success = true;
+            return success;
         } else {
-            output.println("Invalid credentials. Connection terminated.");
+        	outputStream.writeObject("Invalid credentials. Connection terminated.");
+        	closeResources();
         }
-    }
-
-    private void handleUserOptions() throws IOException {
-        boolean loggedIn = true;
-
-        while (loggedIn) {
-            output.println("Select an option:");
-            output.println("1. Find a table");
-            output.println("2. View bank details");
-            output.println("3. Change settings");
-            output.println("4. Logout");
-
-            // Read and deserialize the user's choice
-            String serializedChoice = input.readLine();
-            Message userChoiceMessage = MessageDeserializer.deserialize(serializedChoice);
-
-            switch (userChoiceMessage.getType()) {
-                case FIND_TABLE:
-                    handleFindTable(userChoiceMessage);
-                    break;
-                case BANK_DETAILS:
-                    handleBankDetails(userChoiceMessage);
-                    break;
-                case SETTINGS:
-                    handleSettings(userChoiceMessage);
-                    break;
-                case LOGOUT:
-                    handleLogout(userChoiceMessage);
-                    loggedIn = false;
-                    break;
-                default:
-                    output.println("Invalid option. Please try again.");
-            }
-        }
+		return success;
     }
 
     private void handleFindTable(Message message) {
         // Implement logic to find or create a table
-        output.println("Finding a Blackjack table...");
+    	try {
+			outputStream.writeObject("Finding a Blackjack table...");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void handleBankDetails() {
+        try {
+            // Display the client's balance and options
+            outputStream.writeObject("Your current balance: " + player.getBalance());
+            outputStream.writeObject("Options:");
+            outputStream.writeObject("1. Deposit");
+            outputStream.writeObject("2. Withdraw");
+            outputStream.writeObject("3. Back to main menu");
+
+            // Read and process the user's choice
+            Message userChoice = (Message) inputStream.readObject();
+            switch (userChoice.getType()) {
+                case DEPOSIT:
+                    // Deposit
+                    handleDeposit();
+                    break;
+                case WITHDRAW:
+                    // Withdraw
+                    handleWithdraw();
+                    break;
+//                case 3:
+//                    // Back to main menu
+//                    outputStream.writeObject("Returning to the main menu.");
+//                    break;
+                default:
+                    // Invalid choice
+                    outputStream.writeObject("Invalid option. Please try again.");
+                    break;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void handleBankDetails(Message message) {
-        // Implement logic to show bank details and options
-        output.println("Viewing bank details...");
+    private void handleDeposit() {
+        try {
+            // Ask the user for the deposit amount
+            outputStream.writeObject("Enter the deposit amount:");
+            
+            // Read the deposit amount from the client
+            int depositAmount = (int) inputStream.readObject();
+
+            // Perform the deposit
+            player.deposit(depositAmount);
+
+            // Notify the user about the successful deposit
+            outputStream.writeObject("Deposit successful. Your new balance: " + player.getBalance());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleWithdraw() {
+        try {
+            // Ask the user for the withdrawal amount
+            outputStream.writeObject("Enter the withdrawal amount:");
+
+            // Read the withdrawal amount from the client
+            int withdrawAmount = (int) inputStream.readObject();
+
+            // Perform the withdrawal
+            player.withdraw(withdrawAmount);
+
+            // Notify the user about the result of the withdrawal
+            outputStream.writeObject("Withdrawal successful. Your new balance: " + player.getBalance());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleSettings(Message message) {
-        // Implement logic to handle settings options
-        output.println("Changing settings...");
+        try {
+            outputStream.writeObject("Changing settings...");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // ...
     }
 
     private void handleLogout(Message message) {
-        output.println("Logout successful. Goodbye!");
-        closeResources();
+        try {
+            if (!clientSocket.isClosed()) {
+                outputStream.writeObject("Logout successful. Goodbye!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
     }
 
     private void closeResources() {
         try {
-            input.close();
-            output.close();
-            clientSocket.close();
+            // Close the outputStream and clientSocket; inputStream is closed automatically
+            outputStream.close();
+            if (!clientSocket.isClosed()) {
+                clientSocket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,12 +1,6 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class Server {
 
@@ -65,7 +59,7 @@ public class Server {
 
     public Table findSeat(Player player) {
         for (Table table : tables) {
-            if (!table.isFull()) {
+            if (!table.isTableFull()) {
                 table.addPlayer(player);
                 return table;
             }

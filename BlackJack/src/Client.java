@@ -1,85 +1,148 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.Scanner;
+import java.io.*;
+import java.net.*;
 
-public class Client implements GUIListener{
+public class Client {
 
-    private static final String SERVER_ADDRESS = "localhost"; //Change during presentation
-    private static final int SERVER_PORT = 6000; 
+    private static final String SERVER_ADDRESS = "localhost";
+    private static final int SERVER_PORT = 6000;
 
     private Socket socket;
-    private BufferedReader input;
-    private PrintWriter output;
-    private Scanner scanner;
-    private GUI gui;
-    
-    private String verifyLogin;
-    private String verifyPass;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
+    private BufferedReader scanner;
 
     public Client() {
-        scanner = new Scanner(System.in);
-        gui = new GUI(this);
-        
+        scanner = new BufferedReader(new InputStreamReader(System.in));
     }
 
     public void connectToServer() {
         try {
             // Connect to the server
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new PrintWriter(socket.getOutputStream(), true);
-
-            // Start a new thread to listen for server messages
-            new Thread(this::listenForServerMessages).start();
-
-            // Send user credentials to the server for verification
-            //authenticateUser();
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            inputStream = new ObjectInputStream(socket.getInputStream());
+            
+            getUserCred();
+            System.out.println("User log in successful");
+            handleUserOptions();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    private void authenticateUser() {
+    
+    private void getUserCred() {
         try {
+            // Ask the user for user ID and password
             System.out.println("Enter your user ID:");
-            String userId = scanner.nextLine();
-
+            String userId = scanner.readLine();
             System.out.println("Enter your password:");
-            String password = scanner.nextLine();
+            String password = scanner.readLine();
 
-            // Send credentials to the server for verification
-            output.println(userId + "," + password);
-        } catch (Exception e) {
+            // Create a LOGIN message with userId and password as payload
+            Message loginMessage = new Message(Message.MessageType.LOGIN, userId, password);
+            sendMessage(loginMessage);
+
+            // Wait for the server response (authentication status)
+            String authenticationResponse = (String) inputStream.readObject();
+            System.out.println(authenticationResponse);
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private void listenForServerMessages() {
-        try {
-            String message;
-            while ((message = input.readLine()) != null) {
-                System.out.println("Server says: " + message);
+private void handleUserOptions() {
+        boolean loggedIn = true;
+
+        while (loggedIn) {
+            // Display menu options and get user input
+            System.out.println("Select an option:");
+            System.out.println("1. Find a table");
+            System.out.println("2. View bank details");
+            System.out.println("3. Change settings");
+            System.out.println("4. Logout");
+
+            try {
+                String userChoice = scanner.readLine();
+
+                switch (userChoice) {
+                    case "1":
+                        handleFindTable();
+                        break;
+                    case "2":
+                        handleBankDetails();
+                        break;
+                    case "3":
+                        handleChangeSettings();
+                        break;
+                    case "4":
+                        handleLogout();
+                        loggedIn = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    private void handleFindTable() {
+    	System.out.println("calling FindTable");
+        sendMessage(new Message(Message.MessageType.FIND_TABLE, null, null));
+    }
+
+    private void handleBankDetails() {
+    	System.out.println("calling BankDetails");
+        sendMessage(new Message(Message.MessageType.BANK_DETAILS, null, null));
+        try {
+        	for (int i = 0;i < 5; i++) {
+                String response = (String) inputStream.readObject();
+                System.out.println(response);
+        	}
+        	String answer = scanner.readLine();
+        	if (answer == "1") {
+        		System.out.println("calling Deposit");
+        		sendMessage(new Message(Message.MessageType.DEPOSIT, null, null));
+        	}
+        	if (answer == "2") {
+        		System.out.println("calling Withdraw");
+        		sendMessage(new Message(Message.MessageType.WITHDRAW, null, null));
+        	}
+        	if (answer == "3")
+        		handleUserOptions();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleChangeSettings() {
+    	System.out.println("calling ChangeSettings");
+        sendMessage(new Message(Message.MessageType.SETTINGS, null, null));
+    }
+
+    private void handleLogout() {
+        try {
+            sendMessage(new Message(Message.MessageType.LOGOUT, null, null));
+            if (!socket.isClosed()) {
+                String loginResponse = (String) inputStream.readObject();
+                System.out.println(loginResponse);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendMessage(Message message) {
+        try {
+            outputStream.writeObject(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-	public void guiVerifyLogin(String username, String password) {
-		System.out.println(username);
-		System.out.println(password);
-	}
-	
-	public void guiExit() throws IOException {
-		System.out.println("Closing client");
-		socket.close();
-	}
-	
-	public static void main(String[] args) {
-    	Client client = new Client();
+    public static void main(String[] args) {
+        Client client = new Client();
         client.connectToServer();
     }
 }
