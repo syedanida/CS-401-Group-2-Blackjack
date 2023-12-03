@@ -6,10 +6,10 @@ public class Bank {
 	private String transactionType;
 
 	public Bank(double balance, Player[] playerAccounts, String[] transactionHistory, String transactionType) {
-		this.balance = balance;
+		this.setBalance(balance);
 		this.playerAccounts = playerAccounts;
-		this.transactionHistory = transactionHistory;
-		this.transactionType = transactionType;
+		this.setTransactionHistory(transactionHistory);
+		this.setTransactionType(transactionType);
 	}
 
 	// Method to get all player accpunts in the bank
@@ -86,5 +86,29 @@ public class Bank {
 			playerAccounts[i] = playerAccounts[i + 1];
 		}
 		playerAccounts[playerAccounts.length - 1] = null;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+	public String[] getTransactionHistory() {
+		return transactionHistory;
+	}
+
+	public void setTransactionHistory(String[] transactionHistory) {
+		this.transactionHistory = transactionHistory;
+	}
+
+	public String getTransactionType() {
+		return transactionType;
+	}
+
+	public void setTransactionType(String transactionType) {
+		this.transactionType = transactionType;
 	}
 }
