@@ -38,7 +38,7 @@ public class GUI
 		this.contentPanel.add(loginPanel, "welcome");
 		this.contentPanel.add(menuPanel, "menu");
 		contentPanel.add(tablePanel, "table");
-		cl.show(contentPanel, "test");
+		cl.show(contentPanel, "table");
 		
 		// Sets up pages (row, col)
 		initializeTestPanel();
@@ -214,6 +214,7 @@ public class GUI
 		JPanel row5 = new JPanel();
 		JPanel row6 = new JPanel();
 		JPanel row7 = new JPanel();
+		JPanel row8 = new JPanel();
 		
 		JButton hitButton = new JButton("Hit");
 		JButton standButton = new JButton("Stand");
@@ -230,6 +231,7 @@ public class GUI
 		row5.setLayout(layout);
 		row6.setLayout(layout);
 		row7.setLayout(layout);
+		row8.setLayout(layout);
 		
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbcPanel(tablePanel, row1, 0, 0, 1, 1);
@@ -239,6 +241,7 @@ public class GUI
 		gbcPanel(tablePanel, row5, 0, 4, 1, 1);
 		gbcPanel(tablePanel, row6, 0, 5, 1, 1);
 		gbcPanel(tablePanel, row7, 0, 6, 1, 1);
+		gbcPanel(tablePanel, row8, 0, 7, 1, 1);
 		tableButtons.add(hitButton);
 		tableButtons.add(standButton);
 //		gbcButton(tableButtons, hitButton, 0, 0, 1, 1);
