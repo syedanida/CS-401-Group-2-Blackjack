@@ -24,27 +24,34 @@ public class Player implements CardPlayer{
 	
 	public Player(){
 		id = Integer.toString(idCounter++);
+		playerHand = new ArrayList<>(); 
 	}
 	
-	public Player(String name, String pass) {
+	public Player(String name, String pass, int bal) {
 		id = Integer.toString(idCounter++);
 		displayName = name; 
 		password = pass; 
 		// balance = some minimum value to start off
+		balance = bal; 
+		playerHand = new ArrayList<>(); 
 		
 	}
 	
-	public Player(String userID, String userPassword, String userName, int userBalance) {
-		id = userID;
-		password = userPassword;
-		displayName = userName;
-		balance = userBalance;
-	}
-
 	public void deposit(int amount) {
 		balance += amount; 
 	}
 	
+	@Override
+	public String toString() {
+		
+		String hand = ""; 
+		for(Card card : playerHand) {
+			hand += card.getCardRank() + " of " + card.getCardSuit() + ", ";
+		}
+		return "\nid=" + id + "\ndisplayName=" + displayName + "\nbalance=" + balance + "\ncurrWager=" + currWager
+				+ "\ncurrMove=" + currMove.name() + "\nplayerHand=" + hand + "\nhandValue=" + handValue;
+	}
+
 	public void withdraw(int amount) {
 		if(amount > balance) {
 			// notify of insufficient funds
@@ -87,23 +94,25 @@ public class Player implements CardPlayer{
 		this.currWager = currWager;
 	}
 
+	@Override
 	public MOVE getCurrMove() {
 		return currMove;
 	}
-
+	@Override
 	public void setCurrMove(MOVE currMove) {
 		this.currMove = currMove;
 	}
 
+	@Override
 	public ArrayList<Card> getPlayerHand(){
 		return this.playerHand; 
 	}
-	
+	@Override
 	public int getHandValue() {// edit this later 
 		this.calcHandValue();
 		return handValue;
 	}
-	
+	@Override
 	public void calcHandValue() {
 		handValue = 0; 
 		for(Card card : this.getPlayerHand()) {
@@ -118,10 +127,6 @@ public class Player implements CardPlayer{
 
 	public void setSocket(Socket socket) {
 		this.socket = socket;
-	}
-
-	public Object getPassword() {
-		return password;
 	}
 	
 

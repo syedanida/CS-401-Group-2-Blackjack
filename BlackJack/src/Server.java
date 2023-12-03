@@ -65,7 +65,7 @@ public class Server {
 
     public Table findSeat(Player player) {
         for (Table table : tables) {
-            if (!table.isFull()) {
+            if (!table.isTableFull()) {
                 table.addPlayer(player);
                 return table;
             }

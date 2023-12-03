@@ -8,6 +8,11 @@ public class Dealer implements CardPlayer{
 
 	private int handValue; 
 	
+	
+	public Dealer() {
+		playerHand= new ArrayList<>(); 
+		handValue = 0; 
+	}
 
 	@Override
 	public ArrayList<Card> getPlayerHand() {
@@ -24,22 +29,27 @@ public class Dealer implements CardPlayer{
 		}
 	} 
 	
+	
+	
 	@Override
 	public int getHandValue() {
 		this.calcHandValue();
 		return handValue; 
 	}
-
+	@Override
 	public MOVE getCurrMove() {
 		return currMove;
 	}
-
+	@Override
 	public void setCurrMove(MOVE currMove) {
 		this.currMove = currMove;
 	}
-
+	
 	public void setHandValue(int handValue) {
 		this.handValue = handValue;
 	}
+	
+	
+	
 	
 }

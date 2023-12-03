@@ -2,9 +2,13 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
 public class GUI 
 {
@@ -26,31 +30,39 @@ public class GUI
 	private JPanel menuPanel = new JPanel();
 	private JPanel tablePanel = new JPanel();
 
-	public GUI(Client listener) 
+	public GUI(Client listener)
 	{
 		this.listener = listener;
 		// Sets up main panel content
-		this.contentPanel.setLayout(cl);
-		this.contentPanel.add(testPanel, "test");
-		this.contentPanel.add(loginPanel, "welcome");
-		this.contentPanel.add(menuPanel, "menu");
-		this.cl.show(contentPanel, "test");
+		contentPanel.setLayout(cl);
+		//this.contentPanel.add(testPanel, "test");
+		//this.contentPanel.add(loginPanel, "welcome");
+		//this.contentPanel.add(menuPanel, "menu");
+		contentPanel.add(tablePanel, "table");
+		cl.show(contentPanel, "table");
 		
 		// Sets up pages (row, col)
-		initializeTestPanel();
+//		initializeTestPanel();
 		System.out.println("test page created");
 		initializeLoginPanel(2, 1);
 		System.out.println("login page created");
+		initializeTablePanel();
 		initializeMenuPanel();
 		
-		this.contentPanel.repaint();
-		this.contentPanel.revalidate();
+		contentPanel.repaint();
+		contentPanel.revalidate();
+		contentPanel.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+            	contentPanel.repaint();
+        		contentPanel.revalidate();
+            }
+        });
 		// Sets up main frame
-		this.contentFrame.add(contentPanel);
-		this.contentFrame.setPreferredSize(new Dimension(1000, 800));
-		this.contentFrame.setVisible(true);
-		this.contentFrame.pack();
-		this.contentFrame.addWindowListener(new WindowAdapter() {
+		contentFrame.add(contentPanel);
+		//this.contentFrame.setPreferredSize(new Dimension(1000, 800));
+		contentFrame.setVisible(true);
+		contentFrame.pack();
+		contentFrame.addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent e) {
 		    	try {
 					closeConnection();
@@ -194,47 +206,99 @@ public class GUI
 		});
 	}
 	
+	public void initializeTablePanel() 
+	{
+		tablePanel.setLayout(new GridBagLayout());
+		
+		/// First Row ///
+		JPanel panel01 = new JPanel();
+		panel01.setBackground(Color.red);
+		JPanel panel02 = new JPanel();
+		panel02.setBackground(Color.blue);
+		
+		gbcPanel(tablePanel, panel01, 0, 0, 1, 1);
+		gbcPanel(tablePanel, panel02, 1, 0, 1, 1);
+	}
+	
+	public void createCardsGUI() 
+	{
+		JPanel panel = new JPanel();
+		
+		
+	}
+	
+	
+	private void gbcPanel(JPanel container, JPanel component, int x, int y, int w, int h) 
+	{
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
+		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.add(new JTextField("(" + w + ", " + h + ")"));
+		container.add(component, gbc);
+	}
+	
+	private void gbcButton(JPanel container, JButton component, int x, int y, int w, int h) 
+	{
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
+		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.add(new JTextField("(" + w + ", " + h + ")"));
+		container.add(component, gbc);
+	}
+	
 	public void closeConnection() throws IOException 
 	{
 		listener.guiExit();
 		//System.exit(0);
 	}
 	
-	public void initializeTestPanel() 
-	{
-		
-		
-		JLabel layerA = new JLabel();
-		layerA.setBackground(Color.red);
-		layerA.setOpaque(true);
-		layerA.setBounds(0, 0, 400, 400);
-		
-		JLabel layerB = new JLabel();
-		layerB.setBackground(Color.green);
-		layerB.setOpaque(true);
-		layerB.setBounds(100, 100, 400, 400);
-		
-		JLabel layerC = new JLabel();
-		layerC.setBackground(Color.blue);
-		layerC.setOpaque(true);
-		layerC.setBounds(200, 200, 400, 400);
-
-		JLayeredPane layeredPane = new JLayeredPane();
-		layeredPane.setBounds(0,0, 800, 800);
-		
-		layeredPane.add(layerA, JLayeredPane.DEFAULT_LAYER);
-		layeredPane.add(layerB, JLayeredPane.DEFAULT_LAYER);
-		layeredPane.add(layerC, JLayeredPane.DEFAULT_LAYER);
-		
-		testPanel.add(layeredPane);
-		testPanel.setLayout(null);
-		
-		
-		
-		this.contentPanel.repaint();
-		this.contentPanel.revalidate();
-		
-		
-	}
+//	public void initializeTestPanel() 
+//	{
+//		
+//		
+//		JLabel layerA = new JLabel();
+//		layerA.setBackground(Color.red);
+//		layerA.setOpaque(true);
+//		layerA.setBounds(0, 0, 400, 400);
+//		
+//		JLabel layerB = new JLabel();
+//		layerB.setBackground(Color.green);
+//		layerB.setOpaque(true);
+//		layerB.setBounds(100, 100, 400, 400);
+//		
+//		JLabel layerC = new JLabel();
+//		layerC.setBackground(Color.blue);
+//		layerC.setOpaque(true);
+//		layerC.setBounds(200, 200, 400, 400);
+//
+//		JLayeredPane layeredPane = new JLayeredPane();
+//		layeredPane.setBounds(0,0, 800, 800);
+//		
+//		layeredPane.add(layerA, JLayeredPane.DEFAULT_LAYER);
+//		layeredPane.add(layerB, JLayeredPane.DEFAULT_LAYER);
+//		layeredPane.add(layerC, JLayeredPane.DEFAULT_LAYER);
+//		
+//		testPanel.add(layeredPane);
+//		testPanel.setLayout(null);
+//		
+//		
+//		
+//		contentPanel.repaint();
+//		contentPanel.revalidate();
+//		
+//		
+//	}
 	
 }
