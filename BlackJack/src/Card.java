@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 enum Suit {
-	CLUB, DIAMOND, HEART, SPADE
+	CLUBS, DIAMONDS, HEARTS, SPADES
 }
 
 public class Card {
@@ -63,6 +63,14 @@ public class Card {
 		return value;
 	}
 	
+	public ImageIcon getCardFront() {
+		return cardFront;
+	}
+	
+	public ImageIcon getCardBack() {
+		return cardBack;
+	}
+	
 	private ImageIcon loadFrontsideImage() {
 		String imagePath = generatePath(); // the path for the image
 		ImageIcon img = new ImageIcon(imagePath); 
@@ -72,7 +80,7 @@ public class Card {
 	}
 	
 	private String generatePath() {
-	
-		return "data/cardImages/" + this.rank + "_of_" + this.suit.name() + ".png";
+		System.out.println("data/cardImages/" + this.rank + "_of_" + this.suit.name().toLowerCase() + ".png");
+		return "data/cardImages/" + this.rank + "_of_" + this.suit.name().toLowerCase() + ".png";
 	}
 }

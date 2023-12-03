@@ -1,14 +1,9 @@
 import java.io.*;
+import java.util.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.*;
 
 public class GUI 
 {
@@ -28,7 +23,9 @@ public class GUI
 	
 	private JPanel testPanel = new JPanel();
 	private JPanel menuPanel = new JPanel();
+	
 	private JPanel tablePanel = new JPanel();
+	private int cardDistance = 15;
 
 	public GUI(Client listener)
 	{
@@ -210,22 +207,32 @@ public class GUI
 	{
 		tablePanel.setLayout(new GridBagLayout());
 		
-		/// First Row ///
-		JPanel panel01 = new JPanel();
-		panel01.setBackground(Color.red);
-		JPanel panel02 = new JPanel();
-		panel02.setBackground(Color.blue);
+		ArrayList<Card> cards = new ArrayList<>();
+		cards.add(new Card("5", Suit.DIAMONDS, 5));
+		cards.add(new Card("9", Suit.HEARTS, 9));
+		cards.add(new Card("Queen", Suit.HEARTS, 12));
 		
-		gbcPanel(tablePanel, panel01, 0, 0, 1, 1);
-		gbcPanel(tablePanel, panel02, 1, 0, 1, 1);
+		
+		gbcLayeredPane(tablePanel, createCardsGUI(cards), 0, 0, 1, 1);
 	}
 	
-	public void createCardsGUI() 
+	public JLayeredPane createCardsGUI(ArrayList<Card> cards) 
 	{
-		JPanel panel = new JPanel();
-		
-		int cards = 0;
-		
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, 75+(cardDistance*cards.size()), 100+(cardDistance*cards.size()));
+		int x = 0;
+		int y = 0;
+		int layer = 1;
+		for(int i = 0; i < cards.size(); i++) {
+			ImageIcon icon = cards.get(i).getCardFront();
+			JLabel image = new JLabel(icon);
+			image.setOpaque(true);
+			image.setBounds(x, y, icon.getIconWidth(), icon.getIconHeight());
+			x += cardDistance;
+			y += cardDistance;
+			layeredPane.add(image, Integer.valueOf(layer++));
+		}
+		return layeredPane;
 	}
 	
 	
@@ -239,6 +246,7 @@ public class GUI
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 //		component.add(new JTextField("(" + w + ", " + h + ")"));
 		container.add(component, gbc);
@@ -254,6 +262,23 @@ public class GUI
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
+		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.add(new JTextField("(" + w + ", " + h + ")"));
+		container.add(component, gbc);
+	}
+	
+	private void gbcLayeredPane(JPanel container, JLayeredPane component, int x, int y, int w, int h) 
+	{
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 //		component.add(new JTextField("(" + w + ", " + h + ")"));
 		container.add(component, gbc);
@@ -265,41 +290,39 @@ public class GUI
 		//System.exit(0);
 	}
 	
-//	public void initializeTestPanel() 
-//	{
-//		
-//		
-//		JLabel layerA = new JLabel();
-//		layerA.setBackground(Color.red);
-//		layerA.setOpaque(true);
-//		layerA.setBounds(0, 0, 400, 400);
-//		
-//		JLabel layerB = new JLabel();
-//		layerB.setBackground(Color.green);
-//		layerB.setOpaque(true);
-//		layerB.setBounds(100, 100, 400, 400);
-//		
-//		JLabel layerC = new JLabel();
-//		layerC.setBackground(Color.blue);
-//		layerC.setOpaque(true);
-//		layerC.setBounds(200, 200, 400, 400);
-//
-//		JLayeredPane layeredPane = new JLayeredPane();
-//		layeredPane.setBounds(0,0, 800, 800);
-//		
-//		layeredPane.add(layerA, JLayeredPane.DEFAULT_LAYER);
-//		layeredPane.add(layerB, JLayeredPane.DEFAULT_LAYER);
-//		layeredPane.add(layerC, JLayeredPane.DEFAULT_LAYER);
-//		
-//		testPanel.add(layeredPane);
-//		testPanel.setLayout(null);
-//		
-//		
-//		
-//		contentPanel.repaint();
-//		contentPanel.revalidate();
-//		
-//		
-//	}
+	public void initializeTestPanel() 
+	{
+		
+		
+		JLabel layerA = new JLabel();
+		layerA.setBackground(Color.red);
+		layerA.setOpaque(true);
+		layerA.setBounds(0, 0, 400, 400);
+		
+		JLabel layerB = new JLabel();
+		layerB.setBackground(Color.green);
+		layerB.setOpaque(true);
+		layerB.setBounds(100, 100, 400, 400);
+		
+		JLabel layerC = new JLabel();
+		layerC.setBackground(Color.blue);
+		layerC.setOpaque(true);
+		layerC.setBounds(200, 200, 400, 400);
+
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0,0, 800, 800);
+		
+		layeredPane.add(layerA, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(layerB, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(layerC, JLayeredPane.DEFAULT_LAYER);
+		
+		testPanel.add(layeredPane);
+		testPanel.setLayout(null);
+		
+		contentPanel.repaint();
+		contentPanel.revalidate();
+		
+		
+	}
 	
 }
