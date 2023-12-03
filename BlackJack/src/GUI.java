@@ -25,6 +25,8 @@ public class GUI
 	private JPanel menuPanel = new JPanel();
 	
 	private JPanel tablePanel = new JPanel();
+	private JPanel tableGame = new JPanel();
+	private JPanel tableButtons = new JPanel();
 	private int cardDistance = 15;
 
 	public GUI(Client listener)
@@ -32,14 +34,14 @@ public class GUI
 		this.listener = listener;
 		// Sets up main panel content
 		contentPanel.setLayout(cl);
-//		this.contentPanel.add(testPanel, "test");
-//		this.contentPanel.add(loginPanel, "welcome");
-//		this.contentPanel.add(menuPanel, "menu");
+		this.contentPanel.add(testPanel, "test");
+		this.contentPanel.add(loginPanel, "welcome");
+		this.contentPanel.add(menuPanel, "menu");
 		contentPanel.add(tablePanel, "table");
-		cl.show(contentPanel, "table");
+		cl.show(contentPanel, "test");
 		
 		// Sets up pages (row, col)
-//		initializeTestPanel();
+		initializeTestPanel();
 		System.out.println("test page created");
 		initializeLoginPanel(2, 1);
 		System.out.println("login page created");
@@ -205,21 +207,50 @@ public class GUI
 	
 	public void initializeTablePanel() 
 	{
-		tablePanel.setLayout(new GridBagLayout());
+		JPanel row1 = new JPanel();
+		JPanel row2 = new JPanel();
+		JPanel row3 = new JPanel();
+		JPanel row4 = new JPanel();
+		JPanel row5 = new JPanel();
+		JPanel row6 = new JPanel();
+		JPanel row7 = new JPanel();
 		
-		ArrayList<Card> cards = new ArrayList<>();
-		cards.add(new Card("5", Suit.DIAMONDS, 5));
-		cards.add(new Card("9", Suit.HEARTS, 9));
-		cards.add(new Card("Queen", Suit.HEARTS, 12));
+		JButton hitButton = new JButton("Hit");
+		JButton standButton = new JButton("Stand");
 		
+		GridBagLayout layout = new GridBagLayout();
+		tablePanel.setLayout(layout);
+		tablePanel.setPreferredSize(new Dimension(1280 , 720));
+		tableGame.setLayout(layout);
 		
-		gbcLayeredPane(tablePanel, createCardsGUI(cards), 0, 0, 1, 1);
+		row1.setLayout(layout);
+		row2.setLayout(layout);
+		row3.setLayout(layout);
+		row4.setLayout(layout);
+		row5.setLayout(layout);
+		row6.setLayout(layout);
+		row7.setLayout(layout);
+		
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbcPanel(tablePanel, row1, 0, 0, 1, 1);
+		gbcPanel(tablePanel, row2, 0, 1, 1, 1);
+		gbcPanel(tablePanel, row3, 0, 2, 1, 1);
+		gbcPanel(tablePanel, row4, 0, 3, 1, 1);
+		gbcPanel(tablePanel, row5, 0, 4, 1, 1);
+		gbcPanel(tablePanel, row6, 0, 5, 1, 1);
+		gbcPanel(tablePanel, row7, 0, 6, 1, 1);
+		tableButtons.add(hitButton);
+		tableButtons.add(standButton);
+//		gbcButton(tableButtons, hitButton, 0, 0, 1, 1);
+//		gbcButton(tableButtons, standButton, 0, 1, 1, 1);
 	}
 	
-	public JLayeredPane createCardsGUI(ArrayList<Card> cards) 
+	// Method which creates visualization of hand of cards
+	public JLayeredPane playerCardsGUI(ArrayList<Card> cards) 
 	{
 		JLayeredPane layeredPane = new JLayeredPane();
-		layeredPane.setBounds(0, 0, 75+(cardDistance*cards.size()), 100+(cardDistance*cards.size()));
+//		layeredPane.setLayout(new GridBagLayout());
+		layeredPane.setBounds(0, 0, cards.get(0).getWidth()+(cardDistance*cards.size()), cards.get(0).getHeight()+(cardDistance*cards.size()));
 		int x = 0;
 		int y = 0;
 		int layer = 1;
@@ -261,7 +292,23 @@ public class GUI
 		gbc.gridheight = h;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
+//		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
+		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.add(new JTextField("(" + w + ", " + h + ")"));
+		container.add(component, gbc);
+	}
+	
+	private void gbcLabel(JPanel container, JLabel component, int x, int y, int w, int h) 
+	{
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+//		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.CENTER;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 //		component.add(new JTextField("(" + w + ", " + h + ")"));
@@ -294,30 +341,52 @@ public class GUI
 	{
 		
 		
-		JLabel layerA = new JLabel();
-		layerA.setBackground(Color.red);
-		layerA.setOpaque(true);
-		layerA.setBounds(0, 0, 400, 400);
+//		JLabel layerA = new JLabel();
+//		layerA.setBackground(Color.red);
+//		layerA.setOpaque(true);
+//		layerA.setBounds(0, 0, 400, 400);
+//		
+//		JLabel layerB = new JLabel();
+//		layerB.setBackground(Color.green);
+//		layerB.setOpaque(true);
+//		layerB.setBounds(100, 100, 400, 400);
+//		
+//		JLabel layerC = new JLabel();
+//		layerC.setBackground(Color.blue);
+//		layerC.setOpaque(true);
+//		layerC.setBounds(200, 200, 400, 400);
+//
+//		JLayeredPane layeredPane = new JLayeredPane();
+//		layeredPane.setBounds(0,0, 800, 800);
+//		
+//		layeredPane.add(layerA, JLayeredPane.DEFAULT_LAYER);
+//		layeredPane.add(layerB, JLayeredPane.DEFAULT_LAYER);
+//		layeredPane.add(layerC, JLayeredPane.DEFAULT_LAYER);
+//		
+//		testPanel.add(layeredPane);
 		
-		JLabel layerB = new JLabel();
-		layerB.setBackground(Color.green);
-		layerB.setOpaque(true);
-		layerB.setBounds(100, 100, 400, 400);
+		testPanel.setLayout(new GridBagLayout());
+//		ArrayList<Card> cards = new ArrayList<>();
+//		cards.add(new Card("5", Suit.DIAMONDS, 5));
+//		cards.add(new Card("9", Suit.HEARTS, 9));
+//		cards.add(new Card("Queen", Suit.HEARTS, 12));
+//		gbcLayeredPane(testPanel, playerCardsGUI(cards), 0, 0, 1, 1);
 		
-		JLabel layerC = new JLabel();
-		layerC.setBackground(Color.blue);
-		layerC.setOpaque(true);
-		layerC.setBounds(200, 200, 400, 400);
-
-		JLayeredPane layeredPane = new JLayeredPane();
-		layeredPane.setBounds(0,0, 800, 800);
-		
-		layeredPane.add(layerA, JLayeredPane.DEFAULT_LAYER);
-		layeredPane.add(layerB, JLayeredPane.DEFAULT_LAYER);
-		layeredPane.add(layerC, JLayeredPane.DEFAULT_LAYER);
-		
-		testPanel.add(layeredPane);
-		testPanel.setLayout(null);
+		Card card = new Card("5", Suit.DIAMONDS, 5);
+		ImageIcon originalIcon = card.getCardFront();
+		JLabel image = new JLabel(card.getCardFront());
+		gbcLabel(testPanel, image, 0, 0, 1, 1);
+		testPanel.addComponentListener(new ComponentAdapter() {
+		    @Override
+		    public void componentResized(ComponentEvent e) {
+		        int width = testPanel.getWidth();
+		        int height = testPanel.getHeight();
+		        Image resizedImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		        image.setIcon(new ImageIcon(resizedImage));
+		        
+		        
+		    }
+		});
 		
 		contentPanel.repaint();
 		contentPanel.revalidate();
