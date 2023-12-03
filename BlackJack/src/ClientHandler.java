@@ -38,25 +38,48 @@ public class ClientHandler implements Runnable {
     }
 
     private void handleClient() throws IOException {
-        // Verify credentials with the server
-        String credentials = input.readLine();
-        String[] credentialsArray = credentials.split(",");
-        
-        if (credentialsArray.length == 2) {
-            String userId = credentialsArray[0];
-            String password = credentialsArray[1];
+        // Read and deserialize the message from the client
+        String serializedMessage = input.readLine();
+        Message receivedMessage = MessageDeserializer.deserialize(serializedMessage);
 
-            if (server.verifyCredentials(userId, password)) {
-                player = server.getPlayer(userId);
-                output.println("Authentication successful. You are now connected.");
+        // Process the received message
+        processMessage(receivedMessage);
+    }
 
-                // Handle user options
-                handleUserOptions();
-            } else {
-                output.println("Invalid credentials. Connection terminated.");
-            }
+    private void processMessage(Message message) throws IOException {
+        switch (message.getType()) {
+            case LOGIN:
+                handleLogin(message);
+                break;
+            case FIND_TABLE:
+                handleFindTable(message);
+                break;
+            case BANK_DETAILS:
+                handleBankDetails(message);
+                break;
+            case SETTINGS:
+                handleSettings(message);
+                break;
+            case LOGOUT:
+                handleLogout(message);
+                break;
+            default:
+                output.println("Invalid message type.");
+        }
+    }
+
+    private void handleLogin(Message message) throws IOException {
+        String userId = message.getUserId();
+        String password = message.getPassword();
+
+        if (server.verifyCredentials(userId, password)) {
+            player = server.getPlayer(userId);
+            output.println("Authentication successful. You are now connected.");
+
+            // Handle user options
+            handleUserOptions();
         } else {
-            output.println("Invalid credentials format. Connection terminated.");
+            output.println("Invalid credentials. Connection terminated.");
         }
     }
 
@@ -65,59 +88,53 @@ public class ClientHandler implements Runnable {
 
         while (loggedIn) {
             output.println("Select an option:");
-            output.println("1. Find a Blackjack table");
+            output.println("1. Find a table");
             output.println("2. View bank details");
             output.println("3. Change settings");
             output.println("4. Logout");
 
-            String userChoice = input.readLine();
+            // Read and deserialize the user's choice
+            String serializedChoice = input.readLine();
+            Message userChoiceMessage = MessageDeserializer.deserialize(serializedChoice);
 
-            System.out.println("User choice: " + userChoice);  // Debugging output
-
-            if (userChoice != null) {  // Check if userChoice is not null
-                switch (userChoice) {
-                    case "1":
-                        // Handle finding a Blackjack table
-                        System.out.println("Handling option 1");  // Debugging output
-                        handleFindTable();
-                        break;
-                    case "2":
-                        // Handle viewing bank details
-                        System.out.println("Handling option 2");  // Debugging output
-                        handleViewBankDetails();
-                        break;
-                    case "3":
-                        // Handle changing settings
-                        System.out.println("Handling option 3");  // Debugging output
-                        handleChangeSettings();
-                        break;
-                    case "4":
-                        // Handle logging out
-                        System.out.println("Handling option 4");  // Debugging output
-                        output.println("Logout successful. Goodbye!");
-                        loggedIn = false;
-                        closeResources(); // Close resources and terminate the connection
-                        break;
-                    default:
-                        output.println("Invalid option. Please try again.");
-                }
+            switch (userChoiceMessage.getType()) {
+                case FIND_TABLE:
+                    handleFindTable(userChoiceMessage);
+                    break;
+                case BANK_DETAILS:
+                    handleBankDetails(userChoiceMessage);
+                    break;
+                case SETTINGS:
+                    handleSettings(userChoiceMessage);
+                    break;
+                case LOGOUT:
+                    handleLogout(userChoiceMessage);
+                    loggedIn = false;
+                    break;
+                default:
+                    output.println("Invalid option. Please try again.");
             }
         }
     }
 
-    private void handleFindTable() {
-        // Implement logic to find a Blackjack table
+    private void handleFindTable(Message message) {
+        // Implement logic to find or create a table
         output.println("Finding a Blackjack table...");
     }
 
-    private void handleViewBankDetails() {
-        // Implement logic to view bank details
+    private void handleBankDetails(Message message) {
+        // Implement logic to show bank details and options
         output.println("Viewing bank details...");
     }
 
-    private void handleChangeSettings() {
-        // Implement logic to change settings
+    private void handleSettings(Message message) {
+        // Implement logic to handle settings options
         output.println("Changing settings...");
+    }
+
+    private void handleLogout(Message message) {
+        output.println("Logout successful. Goodbye!");
+        closeResources();
     }
 
     private void closeResources() {
