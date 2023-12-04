@@ -24,10 +24,13 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-        	// Continuously handle client messages
-        	Message receivedMessage = (Message) inputStream.readObject();
+        	boolean pass = false;
+        	while (!pass) {
+        		Message receivedMessage = (Message) inputStream.readObject();
+            	pass = handleLogin(receivedMessage);
+        	}
         	
-        	handleLogin(receivedMessage);
+        	// Continuously handle client messages
             while (true) {
             	
             	Message clientMessage = (Message) inputStream.readObject();
@@ -50,13 +53,10 @@ public class ClientHandler implements Runnable {
     		 outputStream.writeObject("Invalid message received.");
     	        return;
     	    }
-    	 boolean loggedin = true;
-    	 while (loggedin = true) {
+//    	 boolean loggedin = true;
+//    	 while (loggedin = true) {
     	 
         switch (message.getType()) {
-//            case LOGIN:
-//                handleLogin(message);
-//                break;
             case FIND_TABLE:
             	//System.out.println("calling findtable case");
                 handleFindTable(message);
@@ -71,30 +71,30 @@ public class ClientHandler implements Runnable {
                 break;
             case LOGOUT: {
                 handleLogout(message);
-                loggedin = false;
+                //loggedin = false;
                 break;
             }
             default:
             	outputStream.writeObject("Invalid message type.");
         }
-    }
+   // }
     }
 
     private boolean handleLogin(Message message) throws IOException {
         String userId = message.getUserId();
         String password = message.getPassword();
-        boolean success = false;
+        boolean verified = false;
 
         if (server.verifyCredentials(userId, password)) {
             player = server.getPlayer(userId);
             outputStream.writeObject("Authentication successful. You are now connected.");
-            success = true;
-            return success;
+            verified = true;
+            return verified;
         } else {
-        	outputStream.writeObject("Invalid credentials. Connection terminated.");
-        	closeResources();
+        	outputStream.writeObject("Invalid credentials. Try again");
+        	return verified;
+        	//closeResources();
         }
-		return success;
     }
 
     private void handleFindTable(Message message) {

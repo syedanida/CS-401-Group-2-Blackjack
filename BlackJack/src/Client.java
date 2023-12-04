@@ -22,16 +22,17 @@ public class Client {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
             
-            getUserCred();
-            System.out.println("User log in successful");
+            verifyUser();
             handleUserOptions();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
-    private void getUserCred() {
+    private void verifyUser() {
         try {
+        	boolean authenticated = false;
+        	while (!authenticated){
             // Ask the user for user ID and password
             System.out.println("Enter your user ID:");
             String userId = scanner.readLine();
@@ -45,6 +46,12 @@ public class Client {
             // Wait for the server response (authentication status)
             String authenticationResponse = (String) inputStream.readObject();
             System.out.println(authenticationResponse);
+            
+           if(authenticationResponse.equals("Authentication successful. You are now connected.")) {
+        	   authenticated = true;
+        	   return;
+           	}
+        	}
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
