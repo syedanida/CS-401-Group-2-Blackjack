@@ -36,6 +36,13 @@ public class Message implements Serializable {
         this.displayName = displayName;
         this.password = password;
     }
+    
+    public Message(MessageType type, String userId, String password, String displayName) {
+    	this.type = type;
+    	this.userId = userId;
+    	this.password = password;
+    	this.displayName = displayName;
+    }
 
     public Message(MessageType type, String userId, String password, String newUserName, String newPassword) {
         this(type, userId, password);

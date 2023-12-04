@@ -47,8 +47,12 @@ public class Client{
             String authenticationResponse = (String) inputStream.readObject();
             System.out.println(authenticationResponse);
             
-           if(authenticationResponse.equals("Authen"
-           		+ "tication successful. You are now connected.")) {
+           if(authenticationResponse.equals("Authentication successful. You are now connected.")) {
+        	   Message dataResponse = (Message) inputStream.readObject();
+        	   clientDisplayName = dataResponse.getDisplayName();
+        	   clientID = dataResponse.getUserId();
+        	   System.out.println("User: " + clientDisplayName);
+        	   System.out.println("ID: " + clientID);
         	   authenticated = true;
         	   clientDisplayName = username;
         	   gui.loginSuccess();

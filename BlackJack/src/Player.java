@@ -2,8 +2,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Player implements CardPlayer{
-	private static int idCounter = 0; 
-	private String id; 
+//	private static int idCounter = 0; 
+	private String id;
+	private String userID;
 	private String displayName; 
 	private String password;
 	private int balance; 
@@ -13,23 +14,23 @@ public class Player implements CardPlayer{
 	private int handValue; 
 	private Socket socket; 
 	
-	public Player(){
-		id = Integer.toString(idCounter++);
-	}
-	
-	public Player(String name, String pass) {
-		id = Integer.toString(idCounter++);
-		displayName = name; 
-		password = pass; 
-		// balance = some minimum value to start off
-		
-	}
+//	public Player(){
+//		id = Integer.toString(idCounter++);
+//	}
+//	
+//	public Player(String name, String pass) {
+//		id = Integer.toString(idCounter++);
+//		displayName = name; 
+//		password = pass; 
+//		// balance = some minimum value to start off
+//		
+//	}
 	
 	public Player(String userID, String userPassword, String userName, int userBalance) {
-		id = userID;
-		password = userPassword;
-		displayName = userName;
-		balance = userBalance;
+		this.userID = userID;
+		this.password = userPassword;
+		this.displayName = userName;
+		this.balance = userBalance;
 	}
 
 	public void deposit(int amount) {
@@ -45,11 +46,11 @@ public class Player implements CardPlayer{
 	}
 
 	public String getId() {
-		return id;
+		return userID;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setId(String userID) {
+		this.userID = userID;
 	}
 
 	public String getDisplayName() {
@@ -113,7 +114,7 @@ public class Player implements CardPlayer{
 		this.socket = socket;
 	}
 
-	public Object getPassword() {
+	public String getPassword() {
 		return password;
 	}
 	

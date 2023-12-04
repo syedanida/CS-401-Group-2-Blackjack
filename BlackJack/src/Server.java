@@ -48,11 +48,17 @@ public class Server {
     
     public static Player getPlayer(String username) {
     	String userId = idMap.get(username);
-        return playerMap.get(userId);
+    	Player player = playerMap.get(userId);
+    	System.out.println("Getting:");
+    	System.out.println(player.getId());
+    	System.out.println(player.getDisplayName());
+    	System.out.println(player.getPassword());
+        return player;
     }
 
     public static boolean verifyCredentials(String username, String password) {
     	String id = idMap.get(username);
+    	System.out.println("Verifying: " + id);
         Player player = playerMap.get(id);
         return player != null && player.getPassword().equals(password);
     }
@@ -184,6 +190,7 @@ public class Server {
             if (verifyCredentials(username, password)) {
 			    player = getPlayer(username);
 			    outputStream.writeObject("Authentication successful. You are now connected.");
+			    outputStream.writeObject(new Message(MessageType.LOGIN, player.getId(), player.getPassword(), player.getDisplayName()));
 			    System.out.println("Client login successful.");
 			    verified = true;
 			    return verified;
