@@ -59,6 +59,7 @@ public class GUI
 		// Sets up main frame
 		contentFrame.add(contentPanel);
 		//this.contentFrame.setPreferredSize(new Dimension(1000, 800));
+		
 		contentFrame.setVisible(true);
 		contentFrame.pack();
 		contentFrame.addWindowListener(new WindowAdapter() {
@@ -233,14 +234,23 @@ public class GUI
 		tablePanel.setPreferredSize(new Dimension(1280 , 720));
 		tableTop.setLayout(layout);
 		
-		row0.setLayout(layout);
-		row1.setLayout(layout);
-		row2.setLayout(layout);
-		row3.setLayout(layout);
-		row4.setLayout(layout);
-		row5.setLayout(layout);
-		row6.setLayout(layout);
-		row7.setLayout(layout);
+		player1.setLayout(layout);
+		player2.setLayout(layout);
+		player3.setLayout(layout);
+		player4.setLayout(layout);
+		player5.setLayout(layout);
+		player6.setLayout(layout);
+		player7.setLayout(layout);
+		dealer.setLayout(layout);
+		
+		ArrayList<Card> cards = new ArrayList<>();
+		cards.add(new Card("5", Suit.DIAMONDS, 5));
+		cards.add(new Card("9", Suit.HEARTS, 9));
+		cards.add(new Card("Queen", Suit.HEARTS, 12));
+		cards.add(new Card("Ace", Suit.CLUBS, 1));
+		cards.add(new Card("2", Suit.SPADES, 2));
+		cards.add(new Card("Jack", Suit.CLUBS, 11));
+		cards.add(new Card("7", Suit.DIAMONDS, 7));
 		
 		gbc.insets = new Insets(0, 0, 0, 0);
 //		gbcPanel(tablePanel, row0, 0, 0, 1, 1);
@@ -258,21 +268,39 @@ public class GUI
 		gbcPanel(tablePanel, player5, 5, 3, 1, 2);
 		gbcPanel(tablePanel, player6, 0, 2, 1, 2);
 		gbcPanel(tablePanel, player7, 7, 2, 1, 2);
-		gbcPanel(tablePanel, dealer, 3, 1, 1, 2);
+		gbcPanel(tablePanel, dealer, 3, 1, 1, 3);
 		gbcPanel(tablePanel, tableButtons, 0, 6, 8, 2);
 		gbcPanel(tablePanel, tableTop, 0, 0, 8, 1);
 		tableButtons.add(hitButton);
 		tableButtons.add(standButton);
-//		gbcButton(tableButtons, hitButton, 0, 0, 1, 1);
-//		gbcButton(tableButtons, standButton, 0, 1, 1, 1);
+		
+		
+		gbcLayeredPane(player1, playerCardsGUI(cards), 0, 0, 1, 1);
+		gbcLayeredPane(player2, playerCardsGUI(cards), 0, 0, 1, 1);
+		gbcLayeredPane(player3, playerCardsGUI(cards), 0, 0, 1, 1);
+		gbcLayeredPane(player4, playerCardsGUI(cards), 0, 0, 1, 1);
+		gbcLayeredPane(player5, playerCardsGUI(cards), 0, 0, 1, 1);
+		gbcLayeredPane(player6, playerCardsGUI(cards), 0, 0, 1, 1);
+		gbcLayeredPane(player7, playerCardsGUI(cards), 0, 0, 1, 1);
+		gbcLayeredPane(dealer, playerCardsGUI(cards), 0, 0, 1, 1);
+	}
+	
+	public void playerGUI() {
+		
 	}
 	
 	// Method which creates visualization of hand of cards
 	public JLayeredPane playerCardsGUI(ArrayList<Card> cards) 
 	{
 		JLayeredPane layeredPane = new JLayeredPane();
+		JPanel panel = new JPanel();
+		layeredPane.setOpaque(true);
 //		layeredPane.setLayout(new GridBagLayout());
-		layeredPane.setBounds(0, 0, cards.get(0).getWidth()+(cardDistance*cards.size()), cards.get(0).getHeight()+(cardDistance*cards.size()));
+		// bounds = width: cardWidth + (cardDistance 
+		int width = cards.get(0).getWidth() + ((cards.size()-1)*cardDistance);
+		int height = cards.get(0).getHeight() + ((cards.size()-1)*cardDistance);
+		layeredPane.setBounds(0, 0, width, height);
+		layeredPane.setPreferredSize(new Dimension(width, height));
 		int x = 0;
 		int y = 0;
 		int layer = 1;
@@ -289,9 +317,10 @@ public class GUI
 	}
 	
 	
+	
 	private void gbcPanel(JPanel container, JPanel component, int x, int y, int w, int h) 
 	{
-		component.setBackground(Color.gray);
+		//component.setBackground(Color.LIGHT_GRAY);
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = x;
 		gbc.gridy = y;
@@ -331,7 +360,7 @@ public class GUI
 		gbc.gridheight = h;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
-//		gbc.fill = GridBagConstraints.BOTH;
+		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.CENTER;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 //		component.add(new JTextField("(" + w + ", " + h + ")"));
@@ -345,8 +374,8 @@ public class GUI
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
+		gbc.weightx = 0.0;
+		gbc.weighty = 0.0;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.CENTER;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
@@ -395,26 +424,87 @@ public class GUI
 //		cards.add(new Card("Queen", Suit.HEARTS, 12));
 //		gbcLayeredPane(testPanel, playerCardsGUI(cards), 0, 0, 1, 1);
 		
-		Card card = new Card("5", Suit.DIAMONDS, 5);
-		ImageIcon originalIcon = card.getCardFront();
-		JLabel image = new JLabel(card.getCardFront());
-		gbcLabel(testPanel, image, 0, 0, 1, 1);
-		testPanel.addComponentListener(new ComponentAdapter() {
-		    @Override
-		    public void componentResized(ComponentEvent e) {
-		        int width = testPanel.getWidth();
-		        int height = testPanel.getHeight();
-		        Image resizedImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-		        image.setIcon(new ImageIcon(resizedImage));
-		        
-		        
-		    }
-		});
+//		Card card = new Card("5", Suit.DIAMONDS, 5);
+//		ImageIcon originalIcon = card.getCardFront();
+//		JLabel image = new JLabel(card.getCardFront());
+//		gbcLabel(testPanel, image, 0, 0, 1, 1);
+//		testPanel.addComponentListener(new ComponentAdapter() {
+//		    @Override
+//		    public void componentResized(ComponentEvent e) {
+//		        int width = testPanel.getWidth();
+//		        int height = testPanel.getHeight();
+//		        Image resizedImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+//		        image.setIcon(new ImageIcon(resizedImage));
+//		        
+//		        
+//		    }
+//		});
+		JPanel panel1 = new JPanel();
+		panel1.setLayout(new GridBagLayout());
+		JPanel panel2 = new JPanel();
+		gbcPanel(testPanel, panel1, 0, 0, 1, 1);
+		gbcPanel(testPanel, panel2, 0, 1, 1, 1);
 		
+		ArrayList<Card> cards = new ArrayList<>();
+		cards.add(new Card("5", Suit.DIAMONDS, 5));
+		cards.add(new Card("9", Suit.HEARTS, 9));
+		cards.add(new Card("Queen", Suit.HEARTS, 12));
+		cards.add(new Card("Ace", Suit.CLUBS, 1));
+		cards.add(new Card("2", Suit.SPADES, 2));
+		cards.add(new Card("Jack", Suit.CLUBS, 11));
+		cards.add(new Card("7", Suit.DIAMONDS, 7));
+		
+		//testPanel.add(playerCardsGUI(cards));
+		gbcLayeredPane(panel1, playerCardsGUItest(cards, panel1), 0, 0, 1, 1);
 		contentPanel.repaint();
 		contentPanel.revalidate();
-		
-		
+	}
+	
+	public JLayeredPane playerCardsGUItest(ArrayList<Card> cards, JPanel parent) 
+	{
+		JLayeredPane layeredPane = new JLayeredPane();
+		JPanel panel = new JPanel();
+		layeredPane.setBackground(Color.red);
+		layeredPane.setOpaque(true);
+//		layeredPane.setLayout(new GridBagLayout());
+		// bounds = width: cardWidth + (cardDistance 
+		int width = cards.get(0).getWidth() + ((cards.size()-1)*cardDistance);
+		int height = cards.get(0).getHeight() + ((cards.size()-1)*cardDistance);
+		layeredPane.setBounds(0, 0, width, height);
+		layeredPane.setPreferredSize(new Dimension(width, height));
+		int x = 0;
+		int y = 0;
+		int layer = 1;
+		for(int i = 0; i < cards.size(); i++) {
+			ImageIcon icon = cards.get(i).getCardFront();
+			JLabel image = new JLabel(icon);
+			image.setOpaque(true);
+			image.setBounds(x, y, icon.getIconWidth(), icon.getIconHeight());
+			x += cardDistance;
+			y += cardDistance;
+			layeredPane.add(image, Integer.valueOf(layer++));
+		}
+		parent.addComponentListener(new ComponentAdapter() {
+			 public void componentResized(ComponentEvent e) {
+		            // Calculate new card sizes and positions based on parentPanel size
+		            int newWidth = parent.getWidth();
+		            int newHeight = parent.getHeight();
+		            System.out.println("Width:" + newWidth);
+		            System.out.println("Height:" + newHeight);
+		            // ... (code to calculate new sizes and positions of cards)
+
+		            // Update card sizes and positions
+		            for (int i = 0; i < cards.size(); i++) {
+		                JLabel cardLabel = (JLabel) layeredPane.getComponent(i);
+		                // Update cardLabel size and position
+		                // cardLabel.setBounds(...); // Set new bounds
+		            }
+
+		            // Refresh the display
+		            layeredPane.repaint();
+		        }
+		});
+		return layeredPane;
 	}
 	
 }

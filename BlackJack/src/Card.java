@@ -15,8 +15,8 @@ public class Card {
 	private int value; // Values of the card
 	private ImageIcon cardFront; 
 	private ImageIcon cardBack; 
-	private int width = 100;
-	private int height = 140;
+	private int width = 50;
+	private int height = 75;
 
 	// Constructor to initialize a Card object with rank, suit and value
 	public Card(String rank, Suit suit, int cardNum) {
@@ -36,9 +36,9 @@ public class Card {
 		this.cardFront = loadFrontsideImage(); 
 		
 		// setting up the backside of the cards
-//		ImageIcon img = new ImageIcon("data/cardImages/Back Red 1.png"); // path for the image
-//		Image resizedImage = img.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH); // rescaled size
-		this.cardBack = new ImageIcon("data/cardImages/Back Red 1.png");// Assign image for back of the card
+		ImageIcon img = new ImageIcon("data/cardImages/Back Red 1.png"); // path for the image
+		Image resizedImage = img.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH); // rescaled size
+		this.cardBack = new ImageIcon(resizedImage);// Assign image for back of the card
 
 	}
 
@@ -83,7 +83,7 @@ public class Card {
 		ImageIcon img = new ImageIcon(imagePath); 
 		Image resizedImage = img.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH); 
 
-		return new ImageIcon(generatePath());  // consider a default image
+		return new ImageIcon(resizedImage);  // consider a default image
 	}
 	
 	private String generatePath() {
