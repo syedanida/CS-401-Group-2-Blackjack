@@ -15,8 +15,7 @@ public class Message implements Serializable {
         WITHDRAW,
         CHANGE_NAME,
         CHANGE_PASSWORD,
-        DELETE_ACCOUNT,
-        TABLE_INFO
+        DELETE_ACCOUNT
     }
 
     // Common Fields
@@ -27,8 +26,8 @@ public class Message implements Serializable {
     // Fields specific to certain message types
     private String newUserName;
     private String newPassword;
-    private double depositAmount;
-    private double withdrawAmount;
+    private int depositAmount;
+    private int withdrawAmount;
 
     // Constructors for different message types
     public Message(MessageType type, String userId, String password) {
@@ -43,12 +42,12 @@ public class Message implements Serializable {
         this.newPassword = newPassword;
     }
 
-    public Message(MessageType type, String userId, String password, double depositAmount) {
+    public Message(MessageType type, String userId, String password, int depositAmount) {
         this(type, userId, password);
         this.depositAmount = depositAmount;
     }
 
-    public Message(MessageType type, String userId, String password, double withdrawAmount, boolean isWithdraw) {
+    public Message(MessageType type, String userId, String password, int withdrawAmount, boolean isWithdraw) {
         this(type, userId, password);
         if (isWithdraw) {
             this.withdrawAmount = withdrawAmount;
@@ -76,11 +75,11 @@ public class Message implements Serializable {
         return newPassword;
     }
 
-    public double getDepositAmount() {
+    public int getDepositAmount() {
         return depositAmount;
     }
 
-    public double getWithdrawAmount() {
+    public int getWithdrawAmount() {
         return withdrawAmount;
     }
 }

@@ -68,7 +68,9 @@ public class Player implements CardPlayer{
 		this.displayName = displayName;
 	}
 	
-	// May not require setter for password
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	public int getBalance() {
 		return balance;

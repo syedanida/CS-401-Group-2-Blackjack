@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Client implements GUIListener{
+public class Client {
 
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 6000;
@@ -10,11 +10,9 @@ public class Client implements GUIListener{
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private BufferedReader scanner;
-    private GUI gui;
 
     public Client() {
         scanner = new BufferedReader(new InputStreamReader(System.in));
-        gui = new GUI(this);
     }
 
     public void connectToServer() {
@@ -97,15 +95,147 @@ private void handleUserOptions() {
     private void handleBankDetails() {
     	System.out.println("calling BankDetails");
         sendMessage(new Message(Message.MessageType.BANK_DETAILS, null, null));
+        try {
+        	for (int i = 0;i < 5; i++) {
+                String response = (String) inputStream.readObject();
+                System.out.println(response);
+        	}
+        	String answer = scanner.readLine();
+        	if (answer.equals("1")) {
+        		System.out.println("calling Deposit");
+        		handleDeposit();
+        	}
+        	if (answer.equals("2")) {
+        		System.out.println("calling Withdraw");
+        		handleWithdraw();
+        	}
+        	if (answer.equals("3"))
+        		handleUserOptions();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void handleDeposit() {
+    	sendMessage(new Message(Message.MessageType.DEPOSIT, null, null));
+		String response;
+		try {
+			System.out.println("Inside handle deposit");
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+			String depositAmount = scanner.readLine();
+			int intNumber = Integer.parseInt(depositAmount);
+			sendMessage(new Message(Message.MessageType.DEPOSIT, null, null, intNumber));
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void handleWithdraw() {
+    	sendMessage(new Message(Message.MessageType.WITHDRAW, null, null));
+		String response;
+		try {
+			System.out.println("Inside handle withdraw");
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+			String withdrawAmount = scanner.readLine();
+			int intNumber = Integer.parseInt(withdrawAmount);
+			sendMessage(new Message(Message.MessageType.WITHDRAW, null, null, intNumber, true));
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void handleChangeSettings() {
     	System.out.println("calling ChangeSettings");
         sendMessage(new Message(Message.MessageType.SETTINGS, null, null));
+        try {
+        	for (int i = 0;i < 5; i++) {
+                String response = (String) inputStream.readObject();
+                System.out.println(response);
+        	}
+        	String answer = scanner.readLine();
+        	if (answer.equals("1")) {
+        		System.out.println("calling change displayname");
+        		changeDisplayName();
+        	}
+        	if (answer.equals("2")) {
+        		System.out.println("calling change password");
+        		changePassword();
+        	}
+        	if (answer.equals("3"))
+        		handleUserOptions();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void changeDisplayName() {
+        sendMessage(new Message(Message.MessageType.CHANGE_NAME, null, null));
+        String response;
+		try {
+			System.out.println("inside change displayname");
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+			String newDisplayName = scanner.readLine();
+			sendMessage(new Message(Message.MessageType.WITHDRAW, null, null, newDisplayName, null));
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void changePassword() {
+    	System.out.println("inside changepassword");
+        sendMessage(new Message(Message.MessageType.CHANGE_PASSWORD, null, null));
+        try {
+        	for (int i = 0;i < 4; i++) {
+                String response = (String) inputStream.readObject();
+                System.out.println(response);
+        	}
+        	String answer = scanner.readLine();
+        	if (answer.equals("1")) {
+        		System.out.println("calling change displayname");
+        		changeDisplayName();
+        	}
+        	if (answer.equals("2")) {
+        		System.out.println("calling change password");
+        		changePassword();
+        	}
+        	if (answer.equals("3"))
+        		handleUserOptions();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleLogout() {
-        sendMessage(new Message(Message.MessageType.LOGOUT, null, null));
+        try {
+            sendMessage(new Message(Message.MessageType.LOGOUT, null, null));
+            if (!socket.isClosed()) {
+                String loginResponse = (String) inputStream.readObject();
+                System.out.println(loginResponse);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendMessage(Message message) {
@@ -120,17 +250,4 @@ private void handleUserOptions() {
         Client client = new Client();
         client.connectToServer();
     }
-
-	@Override
-	public void guiVerifyLogin(String username, String password) {
-		System.out.println(username);
-		System.out.println(password);
-	}
-
-	@Override
-	public void guiExit() throws IOException {
-		System.out.println("Closing client");
-//		socket.close();
-		System.exit(0);
-	}
 }
