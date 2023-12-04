@@ -140,7 +140,36 @@ public class ClientHandler implements Runnable {
                     break;
                 default:
                     // Invalid choice
-                    outputStream.writeObject("Invalid option. Please try again.");
+                    outputStream.writeObject("Invalid option. Please try again. bankdetails");
+                    break;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void handleSettings(Message message) {
+        try {
+        	outputStream.writeObject("Your current Display Name: " + player.getDisplayName());
+            outputStream.writeObject("Options:");
+            outputStream.writeObject("1. Change Display Name");
+            outputStream.writeObject("2. Change Password");
+            outputStream.writeObject("3. Back to Main Menu");
+            
+         // Read and process the user's choice
+            Message userChoice = (Message) inputStream.readObject();
+            switch (userChoice.getType()) {
+                case CHANGE_NAME:
+                    // Deposit
+                    changeDisplayName();
+                    break;
+                case CHANGE_PASSWORD:
+                    // Withdraw
+                    changePassword();
+                    break;
+                default:
+                    // Invalid choice
+                    outputStream.writeObject("Invalid option. Please try again. handlesettings");
                     break;
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -183,14 +212,42 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         }
     }
+    
+    private void changePassword() {
+    	try {
+            // Ask the user for the new password
+            outputStream.writeObject("Enter your new Password:");
 
-    private void handleSettings(Message message) {
-        try {
-            outputStream.writeObject("Changing settings...");
-        } catch (IOException e) {
+            // Read the new password from the client
+            Message receivedMessage = (Message) inputStream.readObject();
+
+            // Perform password change
+            player.setPassword(receivedMessage.getNewPassword());
+
+            // Notify the user about the password change
+            outputStream.writeObject("Your password has been changed successfully!");
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        // ...
+		
+	}
+
+	private void changeDisplayName() {
+		try {
+            // Ask the user for the new user display name
+            outputStream.writeObject("Enter the new display name:");
+
+            // Read the new display name from the client
+            Message receivedMessage = (Message) inputStream.readObject();
+
+            // Perform the display name change
+            player.setDisplayName(receivedMessage.getNewUserName());
+
+            // Notify the user about the result of the withdrawal
+            outputStream.writeObject("Display name change succesful. Your new display name: " + player.getDisplayName());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleLogout(Message message) {
