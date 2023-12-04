@@ -120,9 +120,6 @@ public class ClientHandler implements Runnable {
                     // Withdraw
                     handleWithdraw();
                     break;
-                case MAIN_MENU:
-                	//Return
-                	break;
                 default:
                     // Invalid choice
                     outputStream.writeObject("Invalid option. Please try again. bankdetails");
@@ -145,16 +142,13 @@ public class ClientHandler implements Runnable {
             Message userChoice = (Message) inputStream.readObject();
             switch (userChoice.getType()) {
                 case CHANGE_NAME:
-                    // DisplayName
+                    // Deposit
                     changeDisplayName();
                     break;
                 case CHANGE_PASSWORD:
-                    // Password
+                    // Withdraw
                     changePassword();
                     break;
-                case MAIN_MENU:
-                	//Return
-                	break;
                 default:
                     // Invalid choice
                     outputStream.writeObject("Invalid option. Please try again. handlesettings");

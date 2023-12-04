@@ -15,7 +15,7 @@ public class Message implements Serializable {
         WITHDRAW,
         CHANGE_NAME,
         CHANGE_PASSWORD,
-        MAIN_MENU
+        DELETE_ACCOUNT
     }
 
     // Common Fields
