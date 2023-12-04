@@ -56,7 +56,7 @@ public class Table {
 			// if this is the first player to join, automatically consider as an active
 			// player
 			if (currentPlayers == 0) {
-//				BlackJackGame();
+				BlackJackGame();
 				currentPlayers++;
 			}
 
@@ -152,9 +152,10 @@ public class Table {
 				playerTurn(players.get(i));
 			}
 
-			// Notify players it is the dealere's turn
+			// Notify players it is the dealer's turn
 			for(Player player : players) {// Display whose turn it is to all players
 				GameMessage msg = new GameMessage(MessageType.TURN, "Dealer's Turn");
+				System.out.println(player.getId());
 				outputStreams.get(player.getId()).writeObject(msg);
 			}
 			// Dealer's turn
