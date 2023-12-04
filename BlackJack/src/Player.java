@@ -1,3 +1,5 @@
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -13,6 +15,8 @@ public class Player implements CardPlayer {
 	private int handValue;
 	private double winnings; 
 	private Socket socket;
+	private ObjectOutputStream outputStream;
+    private ObjectInputStream inputStream;
 
 	public Player() {
 		id = Integer.toString(idCounter++);
@@ -165,6 +169,19 @@ public class Player implements CardPlayer {
 
 	public void setWinnings(double winnings) {
 		this.winnings = winnings;
+	}
+	
+	public void setInOutObjectStream(ObjectInputStream inputStream, ObjectOutputStream outputStream) {
+		this.inputStream = inputStream;
+		this.outputStream = outputStream;
+	}
+	
+	public ObjectOutputStream getObjectOutStream() {
+		return outputStream;
+	}
+	
+	public ObjectInputStream getObjectInStream() {
+		return inputStream;
 	}
 	
 }

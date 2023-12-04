@@ -11,19 +11,19 @@ import java.util.Scanner;
 // import Message.MessageType;
 
 public class Table {
-
-	private int id; // might be needed for keeping track of each game
+	
+    private int id; // might be needed for keeping track of each game
 	private ArrayList<Player> players;
 	private ArrayList<Deck> decks;
 	private Dealer dealer;
 	private int currentPlayers;
 	
-	// for gui input/output
-	 Map<String,ObjectOutputStream> outputStreams;
-	 Map<String, ObjectInputStream> inputStreams; 
+    // for gui input/output
+    private Map<String,ObjectOutputStream> outputStreams;
+    private Map<String, ObjectInputStream> inputStreams; 
 
 	// for console
-//	private Scanner scanner = new Scanner(System.in);
+    //	private Scanner scanner = new Scanner(System.in);
 
 	Table(int id) 
 	{
@@ -47,27 +47,24 @@ public class Table {
 	}
 
 	// Adds a play to join the next available round
-	public void addPlayer(Player newPlayer) {
-		System.out.println(newPlayer.getDisplayName() + "joined Table " + id);
+	public void addPlayer(Player newPlayer) throws ClassNotFoundException, IOException {
+		System.out.println(newPlayer.getDisplayName() + " joining Table " + id);
+		System.out.println(newPlayer.getSocket());
 		if (currentPlayers < 7) {
 			players.add(newPlayer);
 
 			// if this is the first player to join, automatically consider as an active
 			// player
 			if (currentPlayers == 0) {
+//				BlackJackGame();
 				currentPlayers++;
 			}
-			// Create new input and output streams for network comms to client
-			try {
-				ObjectOutputStream outStream = new ObjectOutputStream(newPlayer.getSocket().getOutputStream()); 
-				ObjectInputStream instream = new ObjectInputStream(newPlayer.getSocket().getInputStream()); 
-				// add to lists of streams
-				outputStreams.put(newPlayer.getId(), outStream); 
-				inputStreams.put(newPlayer.getId(),instream); 
-				
-			}catch(IOException e) {
-				e.printStackTrace();
-			}
+
+			// add to lists of streams
+			outputStreams.put(newPlayer.getId(), newPlayer.getObjectOutStream()); 
+			inputStreams.put(newPlayer.getId(), newPlayer.getObjectInStream()); 
+			
+			System.out.println(newPlayer.getDisplayName() + " joined Table " + id);
 		}
 		
 	}
@@ -97,7 +94,7 @@ public class Table {
 	}
 
 	// Runs the game
-	public void BlackjackGame() throws ClassNotFoundException, IOException {
+	public void BlackJackGame() throws ClassNotFoundException, IOException {
 		// Consider new thread for updating status of the game periodically
 		while (players.size() > 0) {
 			// Play a round of blackjack
@@ -327,13 +324,14 @@ public class Table {
 	// NOTE FOR LATER: Nested for loops
 
 	// sends updated information through network to the GUI on client side
-	public void sendGameState() throws IOException {
+	public void sendGameState() throws IOException 
+	{
 		for(Player player : players) { // Do we want to update ALL players (including those not in current round?)
 			for(int i = 0; i < currentPlayers; i++) {
 				try {
 					GuiMessage msg = new GuiMessage(MessageType.UPDATEGUI, players.get(i)); 
 					outputStreams.get(player.getId()).writeObject(msg);
-				}catch(IOException e) {
+				} catch(IOException e) {
 					e.printStackTrace();
 				}
 			}

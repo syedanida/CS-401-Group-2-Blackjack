@@ -74,7 +74,7 @@ public class Server {
         System.out.println("Table " + numTable + " created.");
     }
 
-    public static Table findSeat(Player player) {
+    public static Table findSeat(Player player) throws ClassNotFoundException, IOException {
         for (Table table : tables) {
             if (!table.isTableFull()) {
                 table.addPlayer(player);
@@ -143,6 +143,8 @@ public class Server {
                 	Message clientMessage = (Message) inputStream.readObject();
                 	// Check for log out message
                 	if(clientMessage.getType() == MessageType.LOGOUT) {
+                		String logoutMsg = "Logging out. Goodbye!";
+                		outputStream.writeObject(logoutMsg);
                 		break;
                 	} else {
                 		// Process the received message
@@ -160,7 +162,7 @@ public class Server {
             }
         }
 
-        private void processMessage(Message message) throws IOException {
+        private void processMessage(Message message) throws IOException, ClassNotFoundException {
         	 if (message == null) {
         		 outputStream.writeObject("Invalid message received.");
         	        return;
@@ -199,6 +201,8 @@ public class Server {
 			    outputStream.writeObject("Authentication successful. You are now connected.");
 			    outputStream.writeObject(new Message(MessageType.LOGIN, player.getId(), player.getPassword(), player.getDisplayName()));
 			    System.out.println("Client login successful.");
+			    player.setSocket(clientSocket);
+			    player.setInOutObjectStream(inputStream, outputStream);
 			    verified = true;
 			    return verified;
 			} else {
@@ -209,7 +213,7 @@ public class Server {
 			}
         }
 
-        private void handleFindTable(Message message) 
+        private void handleFindTable(Message message) throws ClassNotFoundException, IOException 
         {
             // Implement logic to find or create a table
         	System.out.println("Finding table for " + player.getDisplayName());
