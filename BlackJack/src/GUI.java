@@ -28,7 +28,7 @@ public class GUI
 
 	public GUI(Client listener) 
 	{
-		this.listener = listener;
+		this.listener = listener; // ERROR I FORGOT ABOUT
 		// Sets up main panel content
 		this.contentPanel.setLayout(cl);
 		this.contentPanel.add(testPanel, "test");
