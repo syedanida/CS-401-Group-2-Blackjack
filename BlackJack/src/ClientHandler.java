@@ -138,10 +138,6 @@ public class ClientHandler implements Runnable {
                     // Withdraw
                     handleWithdraw();
                     break;
-//                case 3:
-//                    // Back to main menu
-//                    outputStream.writeObject("Returning to the main menu.");
-//                    break;
                 default:
                     // Invalid choice
                     outputStream.writeObject("Invalid option. Please try again.");
@@ -158,10 +154,10 @@ public class ClientHandler implements Runnable {
             outputStream.writeObject("Enter the deposit amount:");
             
             // Read the deposit amount from the client
-            int depositAmount = (int) inputStream.readObject();
+            Message receivedMessage = (Message) inputStream.readObject();
 
             // Perform the deposit
-            player.deposit(depositAmount);
+            player.deposit(receivedMessage.getDepositAmount());
 
             // Notify the user about the successful deposit
             outputStream.writeObject("Deposit successful. Your new balance: " + player.getBalance());
@@ -176,10 +172,10 @@ public class ClientHandler implements Runnable {
             outputStream.writeObject("Enter the withdrawal amount:");
 
             // Read the withdrawal amount from the client
-            int withdrawAmount = (int) inputStream.readObject();
+            Message receivedMessage = (Message) inputStream.readObject();
 
             // Perform the withdrawal
-            player.withdraw(withdrawAmount);
+            player.withdraw(receivedMessage.getWithdrawAmount());
 
             // Notify the user about the result of the withdrawal
             outputStream.writeObject("Withdrawal successful. Your new balance: " + player.getBalance());

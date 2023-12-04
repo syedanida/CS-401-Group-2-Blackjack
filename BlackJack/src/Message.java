@@ -75,11 +75,11 @@ public class Message implements Serializable {
         return newPassword;
     }
 
-    public double getDepositAmount() {
+    public int getDepositAmount() {
         return depositAmount;
     }
 
-    public double getWithdrawAmount() {
+    public int getWithdrawAmount() {
         return withdrawAmount;
     }
 }

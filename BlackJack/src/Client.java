@@ -101,19 +101,61 @@ private void handleUserOptions() {
                 System.out.println(response);
         	}
         	String answer = scanner.readLine();
-        	if (answer == "1") {
+        	if (answer.equals("1")) {
         		System.out.println("calling Deposit");
-        		sendMessage(new Message(Message.MessageType.DEPOSIT, null, null));
+        		handleDeposit();
         	}
-        	if (answer == "2") {
+        	if (answer.equals("2")) {
         		System.out.println("calling Withdraw");
-        		sendMessage(new Message(Message.MessageType.WITHDRAW, null, null));
+        		handleWithdraw();
         	}
-        	if (answer == "3")
+        	if (answer.equals("3"))
         		handleUserOptions();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+    
+    private void handleDeposit() {
+    	sendMessage(new Message(Message.MessageType.DEPOSIT, null, null));
+		String response;
+		try {
+			System.out.println("Inside handle deposit");
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+			String depositAmount = scanner.readLine();
+			int intNumber = Integer.parseInt(depositAmount);
+			sendMessage(new Message(Message.MessageType.DEPOSIT, null, null, intNumber));
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void handleWithdraw() {
+    	sendMessage(new Message(Message.MessageType.WITHDRAW, null, null));
+		String response;
+		try {
+			System.out.println("Inside handle withdraw");
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+			String withdrawAmount = scanner.readLine();
+			int intNumber = Integer.parseInt(withdrawAmount);
+			sendMessage(new Message(Message.MessageType.DEPOSIT, null, null, intNumber, true));
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void handleChangeSettings() {
