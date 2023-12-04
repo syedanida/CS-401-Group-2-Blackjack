@@ -80,7 +80,6 @@ private void handleUserOptions() {
                         break;
                     case "4":
                         handleLogout();
-                        //loggedIn = false;
                         break;
                     default:
                         System.out.println("Invalid option. Please try again.");
