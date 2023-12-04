@@ -328,7 +328,7 @@ public class Table {
 		for(Player player : players) { // Do we want to update ALL players (including those not in current round?)
 			for(int i = 0; i < currentPlayers; i++) {
 				try {
-					GuiMessage msg = new GuiMessage(MessageType.WAGER, players.get(i)); 
+					GuiMessage msg = new GuiMessage(MessageType.UPDATEGUI, players.get(i)); 
 					outputStreams.get(player.getId()).writeObject(msg);
 				}catch(IOException e) {
 					e.printStackTrace();
