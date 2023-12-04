@@ -134,7 +134,7 @@ public class Table {
 					System.out.println("\nYour balance is too low");
 				}
 
-				int wager;// Accept wagers from all current players, prompt GUI with GameMessage
+				// Accept wagers from all current players, prompt GUI with GameMessage
 				GameMessage msg = new GameMessage(MessageType.WAGER, "Enter wager amount: "); 
 				outputStreams.get(players.get(i).getId()).writeObject(msg);
 				
@@ -278,7 +278,7 @@ public class Table {
 			 * those who also have 21 Players that have the same hand value as the dealer
 			 * keep their wager and gain no winnings (unless value is 21)
 			 */
-			int initialBalance = players.get(i).getBalance();
+			double initialBalance = players.get(i).getBalance();
 			int handValue = players.get(i).getHandValue();
 
 			if (handValue > 21 || (dealer.getHandValue() < 21 && handValue < dealer.getHandValue())) {// Loss conditions
@@ -316,7 +316,7 @@ public class Table {
 
 	public void setId(int id) {
 		this.id = id;
-	}
+	} 
 
 //	public void sendRealTimeUpdates() {
 //		

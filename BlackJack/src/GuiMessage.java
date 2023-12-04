@@ -5,8 +5,8 @@ public class GuiMessage {
 	private String id; 
 	private String displayName; 
 	private ArrayList<Card> hand; 
-	private int wager; 
-	private int winnings; 
+	private double wager; 
+	private double winnings; 
 	
 	public GuiMessage(MessageType type,Player player) {
 		this.type = type;
