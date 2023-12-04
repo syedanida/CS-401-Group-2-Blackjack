@@ -42,12 +42,12 @@ public class Message implements Serializable {
         this.newPassword = newPassword;
     }
 
-    public Message(MessageType type, String userId, String password, double depositAmount) {
+    public Message(MessageType type, String userId, String password, int depositAmount) {
         this(type, userId, password);
         this.depositAmount = depositAmount;
     }
 
-    public Message(MessageType type, String userId, String password, double withdrawAmount, boolean isWithdraw) {
+    public Message(MessageType type, String userId, String password, int withdrawAmount, boolean isWithdraw) {
         this(type, userId, password);
         if (isWithdraw) {
             this.withdrawAmount = withdrawAmount;
