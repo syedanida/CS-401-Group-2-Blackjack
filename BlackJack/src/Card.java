@@ -67,6 +67,11 @@ public class Card {
 		return value;
 	}
 
+	// Method to set the drawn status of the card
+	public void setDrawn(boolean drawn) {
+		this.isDrawn = drawn;
+	}
+
 	private ImageIcon loadFrontsideImage() {
 
 		// the path for the image
