@@ -34,8 +34,14 @@ public class ClientHandler implements Runnable {
             while (true) {
             	
             	Message clientMessage = (Message) inputStream.readObject();
-                // Process the received message
-                processMessage(clientMessage);
+            	// Check for log out message
+            	if(clientMessage.getType() == Message.MessageType.LOGOUT) {
+            		break;
+            		//closeResources();
+            	} else {
+            		// Process the received message
+                    processMessage(clientMessage);
+            	}
             }
             // Handle the client connection
         } catch (IOException e) {

@@ -197,7 +197,7 @@ private void handleUserOptions() {
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String newDisplayName = scanner.readLine();
-			sendMessage(new Message(Message.MessageType.WITHDRAW, null, null, newDisplayName, null));
+			sendMessage(new Message(Message.MessageType.CHANGE_NAME, null, null, newDisplayName, null));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 		} catch (ClassNotFoundException e) {
@@ -210,27 +210,24 @@ private void handleUserOptions() {
     }
     
     private void changePassword() {
-    	System.out.println("inside changepassword");
         sendMessage(new Message(Message.MessageType.CHANGE_PASSWORD, null, null));
-        try {
-        	for (int i = 0;i < 4; i++) {
-                String response = (String) inputStream.readObject();
-                System.out.println(response);
-        	}
-        	String answer = scanner.readLine();
-        	if (answer.equals("1")) {
-        		System.out.println("calling change displayname");
-        		changeDisplayName();
-        	}
-        	if (answer.equals("2")) {
-        		System.out.println("calling change password");
-        		changePassword();
-        	}
-        	if (answer.equals("3"))
-        		handleUserOptions();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        String response;
+		try {
+
+	    	System.out.println("inside changepassword");
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+			String newPassword = scanner.readLine();
+			sendMessage(new Message(Message.MessageType.CHANGE_PASSWORD, null, null, null, newPassword));
+			response = (String) inputStream.readObject();
+			System.out.println(response);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void handleLogout() {
