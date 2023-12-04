@@ -1,7 +1,9 @@
+import java.util.ArrayList;
 
 public class GameMessage {
 	private MessageType type; 
 	private String text; 
+	
 	
 	public GameMessage(MessageType type) {
 		this.type = type;

@@ -11,6 +11,7 @@ public class Player implements CardPlayer {
 	private MOVE currMove;
 	private ArrayList<Card> playerHand;
 	private int handValue;
+	private int winnings; 
 	private Socket socket;
 
 	public Player() {
@@ -153,4 +154,13 @@ public class Player implements CardPlayer {
 	public Object getPassword() {
 		return password;
 	}
+
+	public int getWinnings() {
+		return winnings;
+	}
+
+	public void setWinnings(int winnings) {
+		this.winnings = winnings;
+	}
+	
 }
