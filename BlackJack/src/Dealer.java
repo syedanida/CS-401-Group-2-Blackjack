@@ -1,33 +1,41 @@
 import java.util.ArrayList;
 
-public class Dealer implements CardPlayer{
-	
+public class Dealer implements CardPlayer {
+
 	private MOVE currMove;
-	
 	private ArrayList<Card> playerHand;
+	private int handValue;
 
-	private int handValue; 
-	
+	public Dealer() {
+		playerHand = new ArrayList<>();
+		handValue = 0;
+	}
 
-	@Override
 	public ArrayList<Card> getPlayerHand() {
-		// TODO Auto-generated method stub
 		return playerHand;
 	}
 
-	@Override
 	public void calcHandValue() {
-		// TODO Auto-generated method stub
-		handValue = 0; 
-		for(Card card : playerHand) {
+		handValue = 0;
+		int numAces = 0;
+
+		for (int i = 0; i < this.getPlayerHand().size(); i++) {
+			Card card = this.getPlayerHand().get(i);
 			handValue += card.getCardValue();
+
+			if ("Ace".equals(card.getCardRank()) && card.getCardValue() == 11) {
+				numAces++;
+			}
 		}
-	} 
-	
-	@Override
+		while (handValue > 21 && numAces > 0) {
+			handValue -= 10;
+			numAces--;
+		}
+	}
+
 	public int getHandValue() {
 		this.calcHandValue();
-		return handValue; 
+		return handValue;
 	}
 
 	public MOVE getCurrMove() {
@@ -41,5 +49,4 @@ public class Dealer implements CardPlayer{
 	public void setHandValue(int handValue) {
 		this.handValue = handValue;
 	}
-	
 }

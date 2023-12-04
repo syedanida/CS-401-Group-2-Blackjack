@@ -25,7 +25,6 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
         	// Continuously handle client messages
-        	// Read and deserialize the message from the client
         	Message receivedMessage = (Message) inputStream.readObject();
         	
         	handleLogin(receivedMessage);
@@ -36,7 +35,6 @@ public class ClientHandler implements Runnable {
                 processMessage(clientMessage);
             }
             // Handle the client connection
-            //handleClient();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -46,15 +44,6 @@ public class ClientHandler implements Runnable {
             closeResources();
         }
     }
-
-//    private void handleClient() throws IOException {
-//        // Read and deserialize the message from the client
-//        String serializedMessage = input.readLine();
-//        Message receivedMessage = MessageDeserializer.deserialize(serializedMessage);
-//
-//        // Process the received message
-//        processMessage(receivedMessage);
-//    }
 
     private void processMessage(Message message) throws IOException {
     	 if (message == null) {
@@ -69,15 +58,15 @@ public class ClientHandler implements Runnable {
 //                handleLogin(message);
 //                break;
             case FIND_TABLE:
-            	System.out.println("calling findtable case");
+            	//System.out.println("calling findtable case");
                 handleFindTable(message);
                 break;
             case BANK_DETAILS:
-            	System.out.println("calling bankdetails case");
+            	//System.out.println("calling bankdetails case");
                 handleBankDetails();
                 break;
             case SETTINGS:
-            	System.out.println("calling settings case");
+            	//System.out.println("calling settings case");
                 handleSettings(message);
                 break;
             case LOGOUT: {
@@ -110,12 +99,7 @@ public class ClientHandler implements Runnable {
 
     private void handleFindTable(Message message) {
         // Implement logic to find or create a table
-    	try {
-			outputStream.writeObject("Finding a Blackjack table...");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			server.findSeat(player);
     }
     
     private void handleBankDetails() {
