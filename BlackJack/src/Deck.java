@@ -1,12 +1,15 @@
+
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Deck {
-	//private Card[] cards; // Array to store the deck of cards
-	private ArrayList<Card> cards; 
-	//private int numCards; // Total number of cards in the deck
-	
+	// private Card[] cards; // Array to store the deck of cards
+	private ArrayList<Card> cards;
+	// private int numCards; // Total number of cards in the deck
+
 	public Deck() {
-	//	this.numCards = 52; // Initializing the total number of cards in a standard deck
+		// this.numCards = 52; // Initializing the total number of cards in a standard
+		// deck
 		initializeDeck(); // Creating and initializing the deck of cards
 	}
 
@@ -14,15 +17,18 @@ public class Deck {
 	public ArrayList<Card> getCards() {
 		return cards;
 	}
-	
+
+	public void shuffle() {
+		Collections.shuffle(cards);
+	}
 
 	private void initializeDeck() {
 		// Creating a new array to hold the cards
-		//Card[] newDeck = new Card[numCards];
+		// Card[] newDeck = new Card[numCards];
 
-		cards = new ArrayList<>(); 
+		cards = new ArrayList<>();
 		// Index to keep track of the position in the new deck array
-		//int index = 0;
+		// int index = 0;
 
 		// Obtaining all possible suit values (enum)
 		Suit[] suits = Suit.values();
@@ -33,14 +39,14 @@ public class Deck {
 			Suit suit = suits[i];
 
 			// Loop through each value (1 to 13) to create cards for the current suit
-			for (int cardNum = 1; cardNum <= 13; cardNum++) { 
+			for (int cardNum = 1; cardNum <= 13; cardNum++) {
 				// Creating a new card
 				cards.add(new Card(determineRank(cardNum), suit, cardNum));
 				// The Card() constructor handles values > 10
 			}
 		}
 		// Returning the initialized deck of cards
-		//return newDeck;
+		// return newDeck;
 	}
 
 	private String determineRank(int value) {
@@ -58,5 +64,5 @@ public class Deck {
 			return String.valueOf(value);
 		}
 	}
-	
+
 }
