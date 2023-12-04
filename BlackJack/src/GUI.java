@@ -19,6 +19,7 @@ public class GUI
 	private JPanel loginPanel = new JPanel();
 	private String loginUserText;
 	private String loginPassText;
+	private String loginInfoText;
 	
 	private JPanel testPanel = new JPanel();
 	private JPanel menuPanel = new JPanel();
@@ -92,20 +93,15 @@ public class GUI
 	
 	public void initializeLoginPanel() 
 	{
-		ImageIcon originalIcon = new ImageIcon("data/welcomeimage.png");
-		JLabel welcomeImage = new JLabel(originalIcon);
 		JLabel msgLabel = new JLabel("test");
-		JLabel userLabel = new JLabel("Username");
-		JLabel passLabel = new JLabel("Password");
-		JTextField userField = new JTextField(20);
-		JPasswordField passField = new JPasswordField(20);
-		JButton loginButton = new JButton("Login");
-		
 		loginPanel.setBackground(new Color(0, 0, 0, 0));
 		loginPanel.setOpaque(false);
 		loginPanel.setLayout(gbl);
+		
 		/// Blackjack logo image ///
 		JPanel imagePanel = new JPanel();
+		ImageIcon originalIcon = new ImageIcon("data/welcomeimage.png");
+		JLabel welcomeImage = new JLabel(originalIcon);
 		imagePanel.setBackground(new Color(0, 0, 0, 0));
 		imagePanel.setOpaque(false);
 		imagePanel.setPreferredSize(new Dimension(800, 120));
@@ -249,18 +245,146 @@ public class GUI
 		exitButton.setFocusPainted(false);
 		exitButton.setPreferredSize(new Dimension(500, 200));
 		exitPanel.add(exitButton);
-		gbcPanel(inputA, playPanel, 0, 0, 1, 1, 1.0);
-		gbcPanel(inputA, exitPanel, 0, 1, 1, 1, 1.0);
-		gbcButton(playPanel, playButton, 0, 0, 1, 1, 1.0);
-		gbcButton(exitPanel, exitButton, 0, 0, 1, 1, 1.0);
+		gbcPanel(inputA, playPanel, 0, 0, 1, 1, 1.0, 1.0);
+		gbcPanel(inputA, exitPanel, 0, 1, 1, 1, 1.0, 1.0);
+		gbcButton(playPanel, playButton, 0, 0, 1, 1, 1.0, 1.0);
+		gbcButton(exitPanel, exitButton, 0, 0, 1, 1, 1.0, 1.0);
 		
 		/// Login Panel ///
+		inputB.setLayout(gbl);
+		inputB.setBackground(new Color(0, 0, 0, 0));
+		inputB.setOpaque(false);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
+		
+		/// Top row ///
+		JPanel fieldPanel = new JPanel();
+		Font fieldFont = new Font("Arial", Font.PLAIN, 45);
+		JLabel userLabel = new JLabel("Username  ");
+		userLabel.setHorizontalAlignment(JLabel.RIGHT);
+		userLabel.setForeground(Color.YELLOW);
+		userLabel.setFont(new Font("Times New Roman", Font.BOLD, 45));
+		JLabel passLabel = new JLabel("Password  ");
+		passLabel.setHorizontalAlignment(JLabel.RIGHT);
+		passLabel.setForeground(Color.YELLOW);
+		passLabel.setFont(new Font("Times New Roman", Font.BOLD, 45));
+		JTextField userField = new JTextField(20);
+		userField.setFont(fieldFont);
+		JPasswordField passField = new JPasswordField(20);
+		passField.setFont(fieldFont);
+		fieldPanel.setLayout(gbl);
+		gbc.insets = new Insets(10, 0, 10, 0);
+		gbcLabel(fieldPanel, userLabel, 0, 0, 1, 1, 0.0, 0.0);
+		gbcLabel(fieldPanel, passLabel, 0, 1, 1, 1, 0.0, 0.0);
+		gbcTextField(fieldPanel, userField, 1, 0, 1, 1, 1.0, 1.0);
+		gbcTextField(fieldPanel, passField, 1, 1, 1, 1, 1.0, 1.0);
+		gbc.insets = new Insets(0, 0, 0, 0);
+		
+		/// Bottom Row ///
+		JPanel infoPanel = new JPanel();
+		JPanel backPanel = new JPanel();
+		JPanel signinPanel = new JPanel();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.CENTER;
+		
+		/// Back button ///
+		Image backImage = new ImageIcon("data/back_button.png").getImage();
+		JButton backButton = new JButton(new ImageIcon(backImage));
+        backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cl.show(inputPanel, "play");
+			}
+		});
+        backPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+            public void componentResized(ComponentEvent e) {
+				int buttonWidth = backButton.getWidth();
+				int buttonHeight = backButton.getHeight();
+				Image scaledImage = backImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+				backButton.setIcon(new ImageIcon(scaledImage));
+				backPanel.revalidate();
+				backPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+            }
+		});
+        backButton.addMouseListener(new MouseAdapter() {
+		    public void mouseEntered(MouseEvent evt) {
+		    	backPanel.revalidate();
+		    	backPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+		    }
+
+		    public void mouseExited(MouseEvent evt) {
+		    	backPanel.revalidate();
+		    	backPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+		    }
+		});
+        backButton.setBackground(new Color(0, 0, 0, 0));
+        backButton.setOpaque(false);
+        backButton.setBorderPainted(false);
+		backButton.setFocusPainted(false);
+		backButton.setPreferredSize(new Dimension(125, 50));
+		backPanel.add(backButton);
+		
+		/// Sign in button ///
+		Image signinImage = new ImageIcon("data/login_button.png").getImage();
+		JButton signinButton = new JButton(new ImageIcon(signinImage));
+        signinButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+        signinPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+            public void componentResized(ComponentEvent e) {
+				int buttonWidth = signinButton.getWidth();
+				int buttonHeight = signinButton.getHeight();
+				Image scaledImage = signinImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+				signinButton.setIcon(new ImageIcon(scaledImage));
+				signinPanel.revalidate();
+				signinPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+            }
+		});
+        signinButton.addMouseListener(new MouseAdapter() {
+		    public void mouseEntered(MouseEvent evt) {
+		    	signinPanel.revalidate();
+		    	signinPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+		    }
+
+		    public void mouseExited(MouseEvent evt) {
+		    	signinPanel.revalidate();
+		    	signinPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+		    }
+		});
+		signinButton.setBackground(new Color(0, 0, 0, 0));
+		signinButton.setOpaque(false);
+		signinButton.setBorderPainted(false);
+		signinButton.setFocusPainted(false);
+		signinButton.setPreferredSize(new Dimension(125, 50));
+		signinPanel.add(signinButton);
+		
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbcPanel(inputB, infoPanel, 0, 0, 2, 1, 1.0, 0.0);
+		gbcPanel(inputB, fieldPanel, 0, 1, 2, 1, 1.0, 1.0);
+		gbcPanel(inputB, backPanel, 0, 2, 1, 1, 1.0, 0.0);
+		gbcPanel(inputB, signinPanel, 1, 2, 1, 1, 1.0, 0.0);
+		
 		
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.CENTER;
-		gbcPanel(loginPanel, imagePanel, 0, 0, 1, 1, 1.0);
+		gbcPanel(loginPanel, imagePanel, 0, 0, 1, 1, 1.0, 1.0);
 		gbc.fill = GridBagConstraints.VERTICAL;
-		gbcPanel(loginPanel, inputPanel, 0, 1, 1, 1, 1.0);
+		gbcPanel(loginPanel, inputPanel, 0, 1, 1, 1, 1.0, 1.0);
 		System.out.println("Login panel created.");
 	}
 	
@@ -375,15 +499,14 @@ public class GUI
 	}
 	
 	private void gbcPanel(JPanel container, JPanel component, 
-			int x, int y, int w, int h, double weight) 
+			int x, int y, int w, int h, double weightx, double weighty) 
 	{
-		//component.setBackground(Color.LIGHT_GRAY);
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
-		gbc.weightx = weight;
-		gbc.weighty = weight;
+		gbc.weightx = weightx;
+		gbc.weighty = weighty;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 		component.setBackground(new Color(0, 0, 0, 0));
 		component.setOpaque(false);
@@ -391,26 +514,40 @@ public class GUI
 	}
 	
 	private void gbcButton(JPanel container, JButton component, 
-			int x, int y, int w, int h, double weight) 
+			int x, int y, int w, int h, double weightx, double weighty) 
 	{
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
-		gbc.weightx = weight;
-		gbc.weighty = weight;
+		gbc.weightx = weightx;
+		gbc.weighty = weighty;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 		container.add(component, gbc);
 	}
 	
-	private void gbcLabel(JPanel container, JLabel component, int x, int y, int w, int h) 
+	private void gbcTextField(JPanel container, JTextField component, 
+			int x, int y, int w, int h, double weightx, double weighty) 
 	{
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
+		gbc.weightx = weightx;
+		gbc.weighty = weighty;
+		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+		container.add(component, gbc);
+	}
+	
+	private void gbcLabel(JPanel container, JLabel component, 
+			int x, int y, int w, int h, double weightx, double weighty) 
+	{
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		gbc.weightx = weightx;
+		gbc.weighty = weighty;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 		container.add(component, gbc);
 	}
