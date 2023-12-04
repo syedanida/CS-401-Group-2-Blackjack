@@ -25,7 +25,7 @@ public class GUI
 	private JPanel menuPanel = new JPanel();
 	
 	private JPanel tablePanel = new JPanel();
-	private JPanel tableGame = new JPanel();
+	private JPanel tableTop = new JPanel();
 	private JPanel tableButtons = new JPanel();
 	private int cardDistance = 15;
 
@@ -207,6 +207,7 @@ public class GUI
 	
 	public void initializeTablePanel() 
 	{
+		JPanel row0 = new JPanel();
 		JPanel row1 = new JPanel();
 		JPanel row2 = new JPanel();
 		JPanel row3 = new JPanel();
@@ -214,7 +215,15 @@ public class GUI
 		JPanel row5 = new JPanel();
 		JPanel row6 = new JPanel();
 		JPanel row7 = new JPanel();
-		JPanel row8 = new JPanel();
+		
+		JPanel player1 = new JPanel();		// Client player
+		JPanel player2 = new JPanel();
+		JPanel player3 = new JPanel();
+		JPanel player4 = new JPanel();
+		JPanel player5 = new JPanel();
+		JPanel player6 = new JPanel();
+		JPanel player7 = new JPanel();
+		JPanel dealer = new JPanel();
 		
 		JButton hitButton = new JButton("Hit");
 		JButton standButton = new JButton("Stand");
@@ -222,8 +231,9 @@ public class GUI
 		GridBagLayout layout = new GridBagLayout();
 		tablePanel.setLayout(layout);
 		tablePanel.setPreferredSize(new Dimension(1280 , 720));
-		tableGame.setLayout(layout);
+		tableTop.setLayout(layout);
 		
+		row0.setLayout(layout);
 		row1.setLayout(layout);
 		row2.setLayout(layout);
 		row3.setLayout(layout);
@@ -231,17 +241,26 @@ public class GUI
 		row5.setLayout(layout);
 		row6.setLayout(layout);
 		row7.setLayout(layout);
-		row8.setLayout(layout);
 		
 		gbc.insets = new Insets(0, 0, 0, 0);
-		gbcPanel(tablePanel, row1, 0, 0, 1, 1);
-		gbcPanel(tablePanel, row2, 0, 1, 1, 1);
-		gbcPanel(tablePanel, row3, 0, 2, 1, 1);
-		gbcPanel(tablePanel, row4, 0, 3, 1, 1);
-		gbcPanel(tablePanel, row5, 0, 4, 1, 1);
-		gbcPanel(tablePanel, row6, 0, 5, 1, 1);
-		gbcPanel(tablePanel, row7, 0, 6, 1, 1);
-		gbcPanel(tablePanel, row8, 0, 7, 1, 1);
+//		gbcPanel(tablePanel, row0, 0, 0, 1, 1);
+//		gbcPanel(tablePanel, row1, 0, 1, 1, 1);
+//		gbcPanel(tablePanel, row2, 0, 2, 1, 1);
+//		gbcPanel(tablePanel, row3, 0, 3, 1, 1);
+//		gbcPanel(tablePanel, row4, 0, 4, 1, 1);
+//		gbcPanel(tablePanel, row5, 0, 5, 1, 1);
+//		gbcPanel(tablePanel, row6, 0, 6, 1, 1);
+//		gbcPanel(tablePanel, row7, 0, 7, 1, 1);
+		gbcPanel(tablePanel, player1, 3, 4, 1, 2);
+		gbcPanel(tablePanel, player2, 2, 4, 1, 2);
+		gbcPanel(tablePanel, player3, 4, 4, 1, 2);
+		gbcPanel(tablePanel, player4, 1, 3, 1, 2);
+		gbcPanel(tablePanel, player5, 5, 3, 1, 2);
+		gbcPanel(tablePanel, player6, 0, 2, 1, 2);
+		gbcPanel(tablePanel, player7, 7, 2, 1, 2);
+		gbcPanel(tablePanel, dealer, 3, 1, 1, 2);
+		gbcPanel(tablePanel, tableButtons, 0, 6, 8, 2);
+		gbcPanel(tablePanel, tableTop, 0, 0, 8, 1);
 		tableButtons.add(hitButton);
 		tableButtons.add(standButton);
 //		gbcButton(tableButtons, hitButton, 0, 0, 1, 1);
@@ -272,6 +291,7 @@ public class GUI
 	
 	private void gbcPanel(JPanel container, JPanel component, int x, int y, int w, int h) 
 	{
+		component.setBackground(Color.gray);
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = x;
 		gbc.gridy = y;
