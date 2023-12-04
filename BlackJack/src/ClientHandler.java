@@ -206,7 +206,7 @@ public class ClientHandler implements Runnable {
             Message receivedMessage = (Message) inputStream.readObject();
 
             // Perform password change
-            player.setPassword(receivedMessage.getNewPassword());
+//            player.setPassword(receivedMessage.getNewPassword());
 
             // Notify the user about the password change
             outputStream.writeObject("Your password has been changed successfully!");

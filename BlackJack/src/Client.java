@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Client {
+public class Client implements GUIListener {
 
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 6000;
@@ -10,9 +10,12 @@ public class Client {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private BufferedReader scanner;
+    private GUI gui;
+    private String clientID;
 
     public Client() {
         scanner = new BufferedReader(new InputStreamReader(System.in));
+        gui = new GUI(this);
     }
 
     public void connectToServer() {
@@ -39,7 +42,7 @@ public class Client {
             String password = scanner.readLine();
 
             // Create a LOGIN message with userId and password as payload
-            Message loginMessage = new Message(Message.MessageType.LOGIN, userId, password);
+            Message loginMessage = new Message(MessageType.LOGIN, userId, password);
             sendMessage(loginMessage);
 
             // Wait for the server response (authentication status)
@@ -89,12 +92,12 @@ private void handleUserOptions() {
 
     private void handleFindTable() {
     	System.out.println("calling FindTable");
-        sendMessage(new Message(Message.MessageType.FIND_TABLE, null, null));
+        sendMessage(new Message(MessageType.FIND_TABLE, null, null));
     }
 
     private void handleBankDetails() {
     	System.out.println("calling BankDetails");
-        sendMessage(new Message(Message.MessageType.BANK_DETAILS, null, null));
+        sendMessage(new Message(MessageType.BANK_DETAILS, null, null));
         try {
         	for (int i = 0;i < 5; i++) {
                 String response = (String) inputStream.readObject();
@@ -117,7 +120,7 @@ private void handleUserOptions() {
     }
     
     private void handleDeposit() {
-    	sendMessage(new Message(Message.MessageType.DEPOSIT, null, null));
+    	sendMessage(new Message(MessageType.DEPOSIT, null, null));
 		String response;
 		try {
 			System.out.println("Inside handle deposit");
@@ -125,7 +128,7 @@ private void handleUserOptions() {
 			System.out.println(response);
 			String depositAmount = scanner.readLine();
 			int intNumber = Integer.parseInt(depositAmount);
-			sendMessage(new Message(Message.MessageType.DEPOSIT, null, null, intNumber));
+			sendMessage(new Message(MessageType.DEPOSIT, null, null, intNumber));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 		} catch (ClassNotFoundException e) {
@@ -138,7 +141,7 @@ private void handleUserOptions() {
     }
     
     private void handleWithdraw() {
-    	sendMessage(new Message(Message.MessageType.WITHDRAW, null, null));
+    	sendMessage(new Message(MessageType.WITHDRAW, null, null));
 		String response;
 		try {
 			System.out.println("Inside handle withdraw");
@@ -146,7 +149,7 @@ private void handleUserOptions() {
 			System.out.println(response);
 			String withdrawAmount = scanner.readLine();
 			int intNumber = Integer.parseInt(withdrawAmount);
-			sendMessage(new Message(Message.MessageType.WITHDRAW, null, null, intNumber, true));
+			sendMessage(new Message(MessageType.WITHDRAW, null, null, intNumber, true));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 		} catch (ClassNotFoundException e) {
@@ -160,7 +163,7 @@ private void handleUserOptions() {
 
     private void handleChangeSettings() {
     	System.out.println("calling ChangeSettings");
-        sendMessage(new Message(Message.MessageType.SETTINGS, null, null));
+        sendMessage(new Message(MessageType.SETTINGS, null, null));
         try {
         	for (int i = 0;i < 5; i++) {
                 String response = (String) inputStream.readObject();
@@ -183,14 +186,14 @@ private void handleUserOptions() {
     }
     
     private void changeDisplayName() {
-        sendMessage(new Message(Message.MessageType.CHANGE_NAME, null, null));
+        sendMessage(new Message(MessageType.CHANGE_NAME, null, null));
         String response;
 		try {
 			System.out.println("inside change displayname");
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String newDisplayName = scanner.readLine();
-			sendMessage(new Message(Message.MessageType.WITHDRAW, null, null, newDisplayName, null));
+			sendMessage(new Message(MessageType.WITHDRAW, null, null, newDisplayName, null));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 		} catch (ClassNotFoundException e) {
@@ -204,7 +207,7 @@ private void handleUserOptions() {
     
     private void changePassword() {
     	System.out.println("inside changepassword");
-        sendMessage(new Message(Message.MessageType.CHANGE_PASSWORD, null, null));
+        sendMessage(new Message(MessageType.CHANGE_PASSWORD, null, null));
         try {
         	for (int i = 0;i < 4; i++) {
                 String response = (String) inputStream.readObject();
@@ -228,7 +231,7 @@ private void handleUserOptions() {
 
     private void handleLogout() {
         try {
-            sendMessage(new Message(Message.MessageType.LOGOUT, null, null));
+            sendMessage(new Message(MessageType.LOGOUT, null, null));
             if (!socket.isClosed()) {
                 String loginResponse = (String) inputStream.readObject();
                 System.out.println(loginResponse);
@@ -250,4 +253,16 @@ private void handleUserOptions() {
         Client client = new Client();
         client.connectToServer();
     }
+
+	@Override
+	public void guiVerifyLogin(String username, String password) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void guiExit() throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -87,7 +87,7 @@ public class Card {
 	}
 	
 	private String generatePath() {
-		System.out.println("data/cardImages/" + this.rank + "_of_" + this.suit.name().toLowerCase() + ".png");
+//		System.out.println("data/cardImages/" + this.rank + "_of_" + this.suit.name().toLowerCase() + ".png");
 		return "data/cardImages/" + this.rank + "_of_" + this.suit.name().toLowerCase() + ".png";
 	}
 }

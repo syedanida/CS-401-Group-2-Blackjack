@@ -2,22 +2,21 @@ import java.io.*;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
 public class GUI 
-{
+{	
 	private JFrame contentFrame = new JFrame("BlackJack");
-	private JPanel contentPanel = new JPanel();
+	private JPanel contentPanel;
 	private CardLayout cl = new CardLayout();
+	private GridBagLayout gbl = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private GUIListener listener;
 	
-	private JPanel[][] loginGrid;
 	private JPanel loginPanel = new JPanel();
-	private JPanel loginSubPanel = new JPanel();
-	private JPanel loginButtons = new JPanel();
-	private JPanel loginInput = new JPanel();
 	private String loginUserText;
 	private String loginPassText;
 	
@@ -31,20 +30,34 @@ public class GUI
 
 	public GUI(Client listener)
 	{
+		// Creates black/green gradient background
+		contentPanel = new JPanel() {
+			@Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g.create();
+                Point2D center = new Point2D.Float(getWidth() / 2, getHeight() / 2);
+                float radius = Math.max(getWidth(), getHeight());
+                float[] dist = {0.0f, 1.0f};
+                Color[] colors = {new Color(2, 107, 14), Color.BLACK};
+                RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                g2d.setPaint(gradient);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+                g2d.dispose();
+            }
+		};
 		this.listener = listener;
-		// Sets up main panel content
+		
+		// Sets up different pages of panel
 		contentPanel.setLayout(cl);
 		this.contentPanel.add(testPanel, "test");
 		this.contentPanel.add(loginPanel, "welcome");
 		this.contentPanel.add(menuPanel, "menu");
 		contentPanel.add(tablePanel, "table");
-		cl.show(contentPanel, "table");
+		cl.show(contentPanel, "welcome");
 		
-		// Sets up pages (row, col)
 		initializeTestPanel();
-		System.out.println("test page created");
-		initializeLoginPanel(2, 1);
-		System.out.println("login page created");
+		initializeLoginPanel();
 		initializeTablePanel();
 		initializeMenuPanel();
 		
@@ -73,13 +86,14 @@ public class GUI
 		});
 	}
 	
-	public void initializeLoginPanel(int row, int col) 
+//	public JButton imageButton(String ) {
+//		return JButton;
+//	}
+	
+	public void initializeLoginPanel() 
 	{
-		JButton playButton = new JButton("Play");
-		JButton exitButton = new JButton("Exit");
-		ImageIcon welcomeIcon = new ImageIcon("data/welcomeimage.png");
-		JLabel welcomeImage = new JLabel();
-		
+		ImageIcon originalIcon = new ImageIcon("data/welcomeimage.png");
+		JLabel welcomeImage = new JLabel(originalIcon);
 		JLabel msgLabel = new JLabel("test");
 		JLabel userLabel = new JLabel("Username");
 		JLabel passLabel = new JLabel("Password");
@@ -87,136 +101,189 @@ public class GUI
 		JPasswordField passField = new JPasswordField(20);
 		JButton loginButton = new JButton("Login");
 		
-		loginPanel.setBackground(new Color(0, 100, 0));
-		loginPanel.setLayout(new GridBagLayout());
+		loginPanel.setBackground(new Color(0, 0, 0, 0));
+		loginPanel.setOpaque(false);
+		loginPanel.setLayout(gbl);
+		/// Blackjack logo image ///
+		JPanel imagePanel = new JPanel();
+		imagePanel.setBackground(new Color(0, 0, 0, 0));
+		imagePanel.setOpaque(false);
+		imagePanel.setPreferredSize(new Dimension(800, 120));
+		imagePanel.addComponentListener(new ComponentAdapter() {
+		    @Override	// Resizes image while keeping ratio
+		    public void componentResized(ComponentEvent e) {
+		        int currWidth = imagePanel.getWidth();
+		        int currHeight = imagePanel.getHeight();
+		        double ratio = 800.0/400.0;
+		        int newWidth;
+		        int newHeight;
+		        if (currWidth / (double)currHeight > ratio) {
+		            newHeight = currHeight;
+		            newWidth = (int)(newHeight * ratio);
+		        } else {
+		            newWidth = currWidth;
+		            newHeight = (int)(newWidth / ratio);
+		        }
+		        Image resizedImage = originalIcon.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+		        welcomeImage.setIcon(new ImageIcon(resizedImage));
+		    }
+		});
+		imagePanel.add(welcomeImage);
 		
-		// Sets up initial page
-		Image img = welcomeIcon.getImage();
-		Image welcomeImg = img.getScaledInstance(300, 300, java.awt.Image.SCALE_SMOOTH);
-		welcomeIcon = new ImageIcon(welcomeImg);
-		welcomeImage.setIcon(welcomeIcon);
-		gbc.insets = new Insets(10, 50, 10, 50);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		loginPanel.add(welcomeImage, gbc);
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		loginPanel.add(loginSubPanel, gbc);
+		/// Input panel ///
+		JPanel inputPanel = new JPanel();
+		JPanel inputA = new JPanel();
+		JPanel inputB = new JPanel();
+		inputPanel.setLayout(cl);
+		inputPanel.add(inputA, "play");
+		inputPanel.add(inputB, "login");
+		cl.show(inputPanel, "play");
+		inputPanel.setBackground(new Color(0, 0, 0, 0));
+		inputPanel.setOpaque(false);
+		inputPanel.setPreferredSize(new Dimension(600, 100));
 		
+		/// Play & Exit button panel ///
+		inputA.setLayout(gbl);
+		inputA.setBackground(new Color(0, 0, 0, 0));
+		inputA.setOpaque(false);
+		JPanel playPanel = new JPanel();
+		JPanel exitPanel = new JPanel();
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
 		
-		// Sets up changing page
-		loginSubPanel.setLayout(cl);
-		loginSubPanel.add(loginButtons, "play");
-		loginSubPanel.add(loginInput, "login");
-		cl.show(loginSubPanel, "play");
-		
-		// Setting up buttons
-		loginButtons.setOpaque(true);
-		//loginButtons.setBackground(new Color(0,0,0,0));
-		loginButtons.setLayout(new BoxLayout(loginButtons, BoxLayout.Y_AXIS));
-		loginButtons.add(Box.createRigidArea(new Dimension(0, 30)));
-		loginButtons.add(playButton);
-		loginButtons.add(Box.createRigidArea(new Dimension(0, 10)));
-		loginButtons.add(exitButton);
-		
-		// Sets up text fields
-		loginInput.setOpaque(true);
-		//loginInput.setBackground(new Color(0,0,0,0));
-		loginInput.setLayout(new GridBagLayout());
-		
-		// Initial 'Play' button
-		playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		/// Play button ///
+		Image playImage = new ImageIcon("data/play_button.png").getImage();
+		JButton playButton = new JButton(new ImageIcon(playImage)) {
+            @Override
+            public Dimension getPreferredSize() {
+                int height = playPanel.getHeight();
+                int width = (int) (height * (5.0 / 2.0));
+                return new Dimension(width, height);
+            }
+        };
 		playButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(loginSubPanel, "login");
+				cl.show(inputPanel, "login");
 			}
 		});
-		// Initial 'Exit' button
-		exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		playPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+            public void componentResized(ComponentEvent e) {
+				int buttonWidth = playButton.getWidth();
+				int buttonHeight = playButton.getHeight();
+				Image scaledImage = playImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+				playButton.setIcon(new ImageIcon(scaledImage));
+				playPanel.revalidate();
+				playPanel.repaint();
+            }
+		});
+		playButton.addMouseListener(new MouseAdapter() {
+		    public void mouseEntered(MouseEvent evt) {
+		    	playPanel.revalidate();
+				playPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+		    }
+
+		    public void mouseExited(MouseEvent evt) {
+		    	playPanel.revalidate();
+				playPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+		    }
+		});
+		playButton.setBackground(new Color(0, 0, 0, 0));
+		playButton.setOpaque(false);
+		playButton.setBorderPainted(false);
+		playButton.setFocusPainted(false);
+		playButton.setPreferredSize(new Dimension(500, 200));
+		playPanel.add(playButton);
+		
+	    /// Exit button ///
+		Image exitImage = new ImageIcon("data/exit_button.png").getImage();
+		JButton exitButton = new JButton(new ImageIcon(exitImage)) {
+            @Override
+            public Dimension getPreferredSize() {
+                int height = exitPanel.getHeight();
+                int width = (int) (height * (5.0 / 2.0));
+                return new Dimension(width, height);
+            }
+        };
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					closeConnection();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				System.exit(0);
 			}
 		});
+		exitPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+            public void componentResized(ComponentEvent e) {
+				int buttonWidth = exitButton.getWidth();
+				int buttonHeight = exitButton.getHeight();
+				Image scaledImage = exitImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+				exitButton.setIcon(new ImageIcon(scaledImage));
+				exitPanel.revalidate();
+				exitPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+            }
+		});
+		exitButton.addMouseListener(new MouseAdapter() {
+		    public void mouseEntered(MouseEvent evt) {
+		    	exitPanel.revalidate();
+		    	exitPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+		    }
+
+		    public void mouseExited(MouseEvent evt) {
+		    	exitPanel.revalidate();
+		    	exitPanel.repaint();
+				inputPanel.revalidate();
+				inputPanel.repaint();
+		    }
+		});
+		exitButton.setBackground(new Color(0, 0, 0, 0));
+		exitButton.setOpaque(false);
+		exitButton.setBorderPainted(false);
+		exitButton.setFocusPainted(false);
+		exitButton.setPreferredSize(new Dimension(500, 200));
+		exitPanel.add(exitButton);
+		gbcPanel(inputA, playPanel, 0, 0, 1, 1, 1.0);
+		gbcPanel(inputA, exitPanel, 0, 1, 1, 1, 1.0);
+		gbcButton(playPanel, playButton, 0, 0, 1, 1, 1.0);
+		gbcButton(exitPanel, exitButton, 0, 0, 1, 1, 1.0);
 		
-		// User input fields
-		gbc.insets = new Insets(5, 5, 5, 5);
-		// First row //
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 2;
+		/// Login Panel ///
+		
+		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.CENTER;
-		loginInput.add(msgLabel, gbc);
-		/// Second row ///
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		loginInput.add(userLabel, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		loginInput.add(userField, gbc);
-		/// Third row ///
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		loginInput.add(passLabel, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		loginInput.add(passField, gbc);
-		/// Fourth row ///
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		loginButton.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
-			public void actionPerformed(ActionEvent e) {
-				// Verifies input fields then sends to client
-				loginUserText = userField.getText();
-				loginPassText = passField.getText();
-				System.out.println("click");
-				
-				if(loginUserText.isBlank() || loginPassText.isBlank()) {
-					msgLabel.setText("Please fill empty fields");
-				} else {
-					listener.guiVerifyLogin(loginUserText, loginPassText);
-//					cl.show(contentPanel, "menu");
-//					contentFrame.revalidate();
-//					contentFrame.repaint();
-				}
-			}
-		});
-		loginInput.add(loginButton, gbc);
-		
+		gbcPanel(loginPanel, imagePanel, 0, 0, 1, 1, 1.0);
+		gbc.fill = GridBagConstraints.VERTICAL;
+		gbcPanel(loginPanel, inputPanel, 0, 1, 1, 1, 1.0);
+		System.out.println("Login panel created.");
 	}
 	
 	public void initializeMenuPanel() 
 	{
+		JPanel buttonPanel = new JPanel();
+		JPanel titlePanel = new JPanel();
+		JPanel exitPanel = new JPanel();
+		JPanel imagePanel = new JPanel();
+		
 		menuPanel.setBackground(new Color(0, 100, 0));
 		menuPanel.setLayout(new GridBagLayout());
-		JButton testButton = new JButton("Test");
-		menuPanel.add(testButton);
-		testButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cl.show(loginSubPanel, "welcome");
-				contentFrame.revalidate();
-				contentFrame.repaint();
-			}
-		});
+		
+//		gbcPanel(menuPanel, titlePanel, 0, 0, 1, 1);
+//		gbcPanel(menuPanel, buttonPanel, 0, 1, 1, 2);
+//		gbcPanel(menuPanel, new JPanel(), 0, 3, 1, 1);
+//		gbcPanel(menuPanel, exitPanel, 0, 4, 1, 1);
+//		gbcPanel(menuPanel, imagePanel, 1, 0, 2, 5);
+		
 	}
 	
 	public void initializeTablePanel() 
 	{
-		JPanel row0 = new JPanel();
-		JPanel row1 = new JPanel();
-		JPanel row2 = new JPanel();
-		JPanel row3 = new JPanel();
-		JPanel row4 = new JPanel();
-		JPanel row5 = new JPanel();
-		JPanel row6 = new JPanel();
-		JPanel row7 = new JPanel();
-		
 		JPanel player1 = new JPanel();		// Client player
 		JPanel player2 = new JPanel();
 		JPanel player3 = new JPanel();
@@ -253,27 +320,18 @@ public class GUI
 		cards.add(new Card("7", Suit.DIAMONDS, 7));
 		
 		gbc.insets = new Insets(0, 0, 0, 0);
-//		gbcPanel(tablePanel, row0, 0, 0, 1, 1);
-//		gbcPanel(tablePanel, row1, 0, 1, 1, 1);
-//		gbcPanel(tablePanel, row2, 0, 2, 1, 1);
-//		gbcPanel(tablePanel, row3, 0, 3, 1, 1);
-//		gbcPanel(tablePanel, row4, 0, 4, 1, 1);
-//		gbcPanel(tablePanel, row5, 0, 5, 1, 1);
-//		gbcPanel(tablePanel, row6, 0, 6, 1, 1);
-//		gbcPanel(tablePanel, row7, 0, 7, 1, 1);
-		gbcPanel(tablePanel, player1, 3, 4, 1, 2);
-		gbcPanel(tablePanel, player2, 2, 4, 1, 2);
-		gbcPanel(tablePanel, player3, 4, 4, 1, 2);
-		gbcPanel(tablePanel, player4, 1, 3, 1, 2);
-		gbcPanel(tablePanel, player5, 5, 3, 1, 2);
-		gbcPanel(tablePanel, player6, 0, 2, 1, 2);
-		gbcPanel(tablePanel, player7, 7, 2, 1, 2);
-		gbcPanel(tablePanel, dealer, 3, 1, 1, 3);
-		gbcPanel(tablePanel, tableButtons, 0, 6, 8, 2);
-		gbcPanel(tablePanel, tableTop, 0, 0, 8, 1);
+//		gbcPanel(tablePanel, player1, 3, 4, 1, 2);
+//		gbcPanel(tablePanel, player2, 2, 4, 1, 2);
+//		gbcPanel(tablePanel, player3, 4, 4, 1, 2);
+//		gbcPanel(tablePanel, player4, 1, 3, 1, 2);
+//		gbcPanel(tablePanel, player5, 5, 3, 1, 2);
+//		gbcPanel(tablePanel, player6, 0, 2, 1, 2);
+//		gbcPanel(tablePanel, player7, 7, 2, 1, 2);
+//		gbcPanel(tablePanel, dealer, 3, 1, 1, 3);
+//		gbcPanel(tablePanel, tableButtons, 0, 6, 8, 2);
+//		gbcPanel(tablePanel, tableTop, 0, 0, 8, 1);
 		tableButtons.add(hitButton);
 		tableButtons.add(standButton);
-		
 		
 		gbcLayeredPane(player1, playerCardsGUI(cards), 0, 0, 1, 1);
 		gbcLayeredPane(player2, playerCardsGUI(cards), 0, 0, 1, 1);
@@ -316,77 +374,63 @@ public class GUI
 		return layeredPane;
 	}
 	
-	
-	
-	private void gbcPanel(JPanel container, JPanel component, int x, int y, int w, int h) 
+	private void gbcPanel(JPanel container, JPanel component, 
+			int x, int y, int w, int h, double weight) 
 	{
 		//component.setBackground(Color.LIGHT_GRAY);
-		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.weightx = weight;
+		gbc.weighty = weight;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
-//		component.add(new JTextField("(" + w + ", " + h + ")"));
+		component.setBackground(new Color(0, 0, 0, 0));
+		component.setOpaque(false);
 		container.add(component, gbc);
 	}
 	
-	private void gbcButton(JPanel container, JButton component, int x, int y, int w, int h) 
+	private void gbcButton(JPanel container, JButton component, 
+			int x, int y, int w, int h, double weight) 
 	{
-		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-//		gbc.fill = GridBagConstraints.BOTH;
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.weightx = weight;
+		gbc.weighty = weight;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
-//		component.add(new JTextField("(" + w + ", " + h + ")"));
 		container.add(component, gbc);
 	}
 	
 	private void gbcLabel(JPanel container, JLabel component, int x, int y, int w, int h) 
 	{
-		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.anchor = GridBagConstraints.CENTER;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
-//		component.add(new JTextField("(" + w + ", " + h + ")"));
 		container.add(component, gbc);
 	}
 	
 	private void gbcLayeredPane(JPanel container, JLayeredPane component, int x, int y, int w, int h) 
 	{
-		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = x;
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
 		gbc.weightx = 0.0;
 		gbc.weighty = 0.0;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.anchor = GridBagConstraints.CENTER;
 		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
-//		component.add(new JTextField("(" + w + ", " + h + ")"));
 		container.add(component, gbc);
 	}
 	
 	public void closeConnection() throws IOException 
 	{
 		listener.guiExit();
-		//System.exit(0);
+		System.exit(0);
 	}
 	
 	public void initializeTestPanel() 
@@ -442,8 +486,8 @@ public class GUI
 		JPanel panel1 = new JPanel();
 		panel1.setLayout(new GridBagLayout());
 		JPanel panel2 = new JPanel();
-		gbcPanel(testPanel, panel1, 0, 0, 1, 1);
-		gbcPanel(testPanel, panel2, 0, 1, 1, 1);
+//		gbcPanel(testPanel, panel1, 0, 0, 1, 1);
+//		gbcPanel(testPanel, panel2, 0, 1, 1, 1);
 		
 		ArrayList<Card> cards = new ArrayList<>();
 		cards.add(new Card("5", Suit.DIAMONDS, 5));

@@ -1,55 +1,77 @@
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Player implements CardPlayer{
-	private static int idCounter = 0; 
-	
-	private String id; 
-	private String displayName; 
+public class Player implements CardPlayer {
+	private static int idCounter = 0;
+	private String id;
+	private String displayName;
 	private String password;
-	private int balance; 
-	private int currWager; 
+	private int balance;
+	private int currWager;
 	private MOVE currMove;
-	private ArrayList<Card> playerHand; 
-	private int handValue; 
-	private Socket socket; 
-	
-	public Player(){
+	private ArrayList<Card> playerHand;
+	private int handValue;
+	private int winnings; 
+	private Socket socket;
+
+	public Player() {
 		id = Integer.toString(idCounter++);
-		playerHand = new ArrayList<>(); 
+		playerHand = new ArrayList<>();
 	}
-	
-	public Player(String id, String password, String displayName, int balance) {
-//		id = Integer.toString(idCounter++);
-		this.id = id;
-		this.displayName = displayName;
-		this.password = password;
-		this.balance = balance;				// balance = some minimum value to start off
-		playerHand = new ArrayList<>(); 
-		
+
+	public Player(String name, String pass, int bal) {
+		id = Integer.toString(idCounter++);
+		displayName = name;
+		password = pass;
+		// balance = some minimum value to start off
+		balance = bal;
+		playerHand = new ArrayList<>();
+
 	}
-	
+
+	public Player(String userID, String name, String pass, int bal) {
+		id = userID;
+		password = pass;
+		// balance = some minimum value to start off
+		balance = bal;
+		playerHand = new ArrayList<>();
+
+	}
+
 	public void deposit(int amount) {
-		balance += amount; 
+		balance += amount;
 	}
-	
-	@Override
+
 	public String toString() {
-		
-		String hand = ""; 
-		for(Card card : playerHand) {
-			hand += card.getCardRank() + " of " + card.getCardSuit() + ", ";
+		String result = "\nid =" + id + "\ndisplayName =" + displayName + "\nbalance =" + balance + "\ncurrWager ="
+				+ currWager + "\ncurrMove =" + currMove.name() + "\nplayerHand =" + "\nhandValue =" + handValue;
+
+		for (int i = 0; i < playerHand.size(); i++) {
+			Card card = playerHand.get(i);
+
+			result += card.getCardRank() + " of " + card.getCardSuit();
+			if (i < playerHand.size() - 1) {
+				result += ", ";
+			}
 		}
-		return "\nid=" + id + "\ndisplayName=" + displayName + "\nbalance=" + balance + "\ncurrWager=" + currWager
-				+ "\ncurrMove=" + currMove.name() + "\nplayerHand=" + hand + "\nhandValue=" + handValue;
+
+		result += "\nhandValue = " + handValue;
+		return result;
+
+//		String hand = "";
+//		for (Card card : playerHand) {
+//			hand += card.getCardRank() + " of " + card.getCardSuit() + ", ";
+//		}
+//		return "\nid=" + id + "\ndisplayName=" + displayName + "\nbalance=" + balance + "\ncurrWager=" + currWager
+//				+ "\ncurrMove=" + currMove.name() + "\nplayerHand=" + hand + "\nhandValue=" + handValue;
 	}
 
 	public void withdraw(int amount) {
-		if(amount > balance) {
+		if (amount > balance) {
 			// notify of insufficient funds
-			return; 
+			return;
 		}
-		balance -= amount; 
+		balance -= amount;
 	}
 
 	public String getId() {
@@ -67,10 +89,8 @@ public class Player implements CardPlayer{
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
+
+	// May not require setter for password
 
 	public int getBalance() {
 		return balance;
@@ -88,31 +108,39 @@ public class Player implements CardPlayer{
 		this.currWager = currWager;
 	}
 
-	@Override
 	public MOVE getCurrMove() {
 		return currMove;
 	}
-	@Override
+
 	public void setCurrMove(MOVE currMove) {
 		this.currMove = currMove;
 	}
 
-	@Override
-	public ArrayList<Card> getPlayerHand(){
-		return this.playerHand; 
+	public ArrayList<Card> getPlayerHand() {
+		return this.playerHand;
 	}
-	@Override
-	public int getHandValue() {// edit this later 
+
+	public int getHandValue() {
 		this.calcHandValue();
 		return handValue;
 	}
-	@Override
+
 	public void calcHandValue() {
-		handValue = 0; 
-		for(Card card : this.getPlayerHand()) {
-			handValue += card.getCardValue(); 
+		handValue = 0;
+		int numAces = 0;
+
+		for (int i = 0; i < this.getPlayerHand().size(); i++) {
+			Card card = this.getPlayerHand().get(i);
+			handValue += card.getCardValue();
+
+			if ("Ace".equals(card.getCardRank()) && card.getCardValue() == 11) {
+				numAces++;
+			}
 		}
-		
+		while (handValue > 21 && numAces > 0) {
+			handValue -= 10;
+			numAces--;
+		}
 	}
 
 	public Socket getSocket() {
@@ -122,12 +150,17 @@ public class Player implements CardPlayer{
 	public void setSocket(Socket socket) {
 		this.socket = socket;
 	}
-	
 
-//	public void setHandValue(int handValue) {
-//		this.handValue = handValue;
-//	}
-	
-	
+	public String getPassword() {
+		return password;
+	}
+
+	public int getWinnings() {
+		return winnings;
+	}
+
+	public void setWinnings(int winnings) {
+		this.winnings = winnings;
+	}
 	
 }

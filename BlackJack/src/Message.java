@@ -1,22 +1,22 @@
 import java.io.Serializable;
 
+//Types of Messages
+enum MessageType {
+    LOGIN,
+    LOGOUT,
+    FIND_TABLE,
+    BANK_DETAILS,
+    SETTINGS,
+    DEPOSIT,
+    WITHDRAW,
+    CHANGE_NAME,
+    CHANGE_PASSWORD,
+    DELETE_ACCOUNT
+}
+
 public class Message implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    // Types of Messages
-    public enum MessageType {
-        LOGIN,
-        LOGOUT,
-        FIND_TABLE,
-        BANK_DETAILS,
-        SETTINGS,
-        DEPOSIT,
-        WITHDRAW,
-        CHANGE_NAME,
-        CHANGE_PASSWORD,
-        DELETE_ACCOUNT
-    }
 
     // Common Fields
     private MessageType type;
