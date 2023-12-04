@@ -58,10 +58,7 @@ public class Client {
     }
 
 private void handleUserOptions() {
-        boolean loggedIn = true;
-
-        while (loggedIn) {
-            // Display menu options and get user input
+	
             System.out.println("Select an option:");
             System.out.println("1. Find a table");
             System.out.println("2. View bank details");
@@ -83,24 +80,21 @@ private void handleUserOptions() {
                         break;
                     case "4":
                         handleLogout();
-                        loggedIn = false;
+                        //loggedIn = false;
                         break;
                     default:
                         System.out.println("Invalid option. Please try again.");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            }
         }
     }
 
     private void handleFindTable() {
-    	System.out.println("calling FindTable");
         sendMessage(new Message(Message.MessageType.FIND_TABLE, null, null));
     }
 
     private void handleBankDetails() {
-    	System.out.println("calling BankDetails");
         sendMessage(new Message(Message.MessageType.BANK_DETAILS, null, null));
         try {
         	for (int i = 0;i < 5; i++) {
@@ -109,11 +103,9 @@ private void handleUserOptions() {
         	}
         	String answer = scanner.readLine();
         	if (answer.equals("1")) {
-        		System.out.println("calling Deposit");
         		handleDeposit();
         	}
         	if (answer.equals("2")) {
-        		System.out.println("calling Withdraw");
         		handleWithdraw();
         	}
         	if (answer.equals("3"))
@@ -127,7 +119,6 @@ private void handleUserOptions() {
     	sendMessage(new Message(Message.MessageType.DEPOSIT, null, null));
 		String response;
 		try {
-			System.out.println("Inside handle deposit");
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String depositAmount = scanner.readLine();
@@ -135,11 +126,10 @@ private void handleUserOptions() {
 			sendMessage(new Message(Message.MessageType.DEPOSIT, null, null, intNumber));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
+			handleUserOptions();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -148,7 +138,6 @@ private void handleUserOptions() {
     	sendMessage(new Message(Message.MessageType.WITHDRAW, null, null));
 		String response;
 		try {
-			System.out.println("Inside handle withdraw");
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String withdrawAmount = scanner.readLine();
@@ -156,17 +145,15 @@ private void handleUserOptions() {
 			sendMessage(new Message(Message.MessageType.WITHDRAW, null, null, intNumber, true));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
+			handleUserOptions();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
 
     private void handleChangeSettings() {
-    	System.out.println("calling ChangeSettings");
         sendMessage(new Message(Message.MessageType.SETTINGS, null, null));
         try {
         	for (int i = 0;i < 5; i++) {
@@ -175,11 +162,9 @@ private void handleUserOptions() {
         	}
         	String answer = scanner.readLine();
         	if (answer.equals("1")) {
-        		System.out.println("calling change displayname");
         		changeDisplayName();
         	}
         	if (answer.equals("2")) {
-        		System.out.println("calling change password");
         		changePassword();
         	}
         	if (answer.equals("3"))
@@ -193,18 +178,16 @@ private void handleUserOptions() {
         sendMessage(new Message(Message.MessageType.CHANGE_NAME, null, null));
         String response;
 		try {
-			System.out.println("inside change displayname");
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String newDisplayName = scanner.readLine();
 			sendMessage(new Message(Message.MessageType.CHANGE_NAME, null, null, newDisplayName, null));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
+			handleUserOptions();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -213,34 +196,52 @@ private void handleUserOptions() {
         sendMessage(new Message(Message.MessageType.CHANGE_PASSWORD, null, null));
         String response;
 		try {
-
-	    	System.out.println("inside changepassword");
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String newPassword = scanner.readLine();
 			sendMessage(new Message(Message.MessageType.CHANGE_PASSWORD, null, null, null, newPassword));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
+			handleUserOptions();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
-
+    
     private void handleLogout() {
         try {
-            sendMessage(new Message(Message.MessageType.LOGOUT, null, null));
-            if (!socket.isClosed()) {
-                String loginResponse = (String) inputStream.readObject();
-                System.out.println(loginResponse);
-            }
+            outputStream.writeObject(new Message(Message.MessageType.LOGOUT, null, null));
+            // Check if the server has responded or handle accordingly
+            String loginResponse = (String) inputStream.readObject();
+            System.out.println(loginResponse);
         } catch (IOException | ClassNotFoundException e) {
+            // Handle IOException and ClassNotFoundException
+            e.printStackTrace();
+        } finally {
+            // Ensure resources are properly closed, even in case of exceptions
+            closeResources();
+        }
+    }
+    
+    private void closeResources() {
+        try {
+            // Close the outputStream, inputStream, and socket
+            if (outputStream != null) {
+                outputStream.close();
+            }
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void sendMessage(Message message) {
         try {

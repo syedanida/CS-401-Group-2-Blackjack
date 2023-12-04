@@ -37,7 +37,6 @@ public class ClientHandler implements Runnable {
             	// Check for log out message
             	if(clientMessage.getType() == Message.MessageType.LOGOUT) {
             		break;
-            		//closeResources();
             	} else {
             		// Process the received message
                     processMessage(clientMessage);
@@ -59,31 +58,24 @@ public class ClientHandler implements Runnable {
     		 outputStream.writeObject("Invalid message received.");
     	        return;
     	    }
-//    	 boolean loggedin = true;
-//    	 while (loggedin = true) {
     	 
         switch (message.getType()) {
             case FIND_TABLE:
-            	//System.out.println("calling findtable case");
                 handleFindTable(message);
                 break;
             case BANK_DETAILS:
-            	//System.out.println("calling bankdetails case");
                 handleBankDetails();
                 break;
             case SETTINGS:
-            	//System.out.println("calling settings case");
                 handleSettings(message);
                 break;
             case LOGOUT: {
                 handleLogout(message);
-                //loggedin = false;
                 break;
             }
             default:
             	outputStream.writeObject("Invalid message type.");
         }
-   // }
     }
 
     private boolean handleLogin(Message message) throws IOException {
@@ -97,7 +89,7 @@ public class ClientHandler implements Runnable {
             verified = true;
             return verified;
         } else {
-        	outputStream.writeObject("Invalid credentials. Try again");
+        	outputStream.writeObject("Invalid credentials. Try again!");
         	return verified;
         	//closeResources();
         }
