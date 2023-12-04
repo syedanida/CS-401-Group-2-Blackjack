@@ -26,8 +26,8 @@ public class Message implements Serializable {
     // Fields specific to certain message types
     private String newUserName;
     private String newPassword;
-    private double depositAmount;
-    private double withdrawAmount;
+    private int depositAmount;
+    private int withdrawAmount;
 
     // Constructors for different message types
     public Message(MessageType type, String userId, String password) {
