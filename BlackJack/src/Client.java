@@ -95,8 +95,9 @@ public class Client{
         }
     }
 
-    private void handleFindTable() {
+    void handleFindTable() {
         sendMessage(new Message(MessageType.FIND_TABLE, null, null));
+        System.out.println("Finding a table.");
     }
 
     private void handleBankDetails() {

@@ -6,8 +6,9 @@ public class Server {
 
     private static Map<String, Player> playerMap;
     private static Map<String, String> idMap;
-    private List<Table> tables;
+    private static List<Table> tables;
     private static int SERVER_PORT = 6000;
+    private static int numTable = 0;
 
     public Server() {
         loadPlayerDataFromFile();
@@ -60,15 +61,20 @@ public class Server {
     	String id = idMap.get(username);
     	System.out.println("Verifying: " + id);
         Player player = playerMap.get(id);
+        System.out.println(player.getId());
+        System.out.println(player.getDisplayName());
+        System.out.println(player.getPassword());
         return player != null && player.getPassword().equals(password);
     }
     
     private void createTable() {
-    	Table table = new Table();
+    	numTable++;
+    	Table table = new Table(numTable);
         tables.add(table);
+        System.out.println("Table " + numTable + " created.");
     }
 
-    public Table findSeat(Player player) {
+    public static Table findSeat(Player player) {
         for (Table table : tables) {
             if (!table.isTableFull()) {
                 table.addPlayer(player);
@@ -77,7 +83,8 @@ public class Server {
         }
 
         // If no table has an available seat, create a new table
-        Table newTable = new Table();
+        numTable++;
+        Table newTable = new Table(numTable);
         newTable.addPlayer(player);
         tables.add(newTable);
         return newTable;
@@ -202,9 +209,11 @@ public class Server {
 			}
         }
 
-        private void handleFindTable(Message message) {
+        private void handleFindTable(Message message) 
+        {
             // Implement logic to find or create a table
-//    			findSeat(player);
+        	System.out.println("Finding table for " + player.getDisplayName());
+    		findSeat(player);
         }
         
         private void handleBankDetails() {

@@ -52,6 +52,7 @@ public class GUI
 		
 		// Sets up different pages of panel
 		contentPanel.setLayout(cl);
+		contentPanel.setPreferredSize(new Dimension(1280, 720));
 		contentPanel.add(testPanel, "test");
 		contentPanel.add(loginPanel, "welcome");
 		contentPanel.add(menuPanel, "menu");
@@ -402,7 +403,6 @@ public class GUI
 
 	private void initializeMenuPanel() 
 	{
-		menuPanel.setLayout(new GridBagLayout());
 		menuPanel.setBackground(new Color(0, 0, 0, 0));
 		menuPanel.setOpaque(false);
 		menuPanel.setLayout(gbl);
@@ -426,7 +426,8 @@ public class GUI
 		};
 		findTableButton.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        cl.show(contentPanel, "welcome");
+		    	client.handleFindTable();
+		        cl.show(contentPanel, "table");
 		    }
 		});
 		 findTablePanel.addComponentListener(new ComponentAdapter() {
@@ -610,6 +611,10 @@ public class GUI
 	
 	private void initializeTablePanel() 
 	{
+		tablePanel.setBackground(new Color(0, 0, 0, 0));
+		tablePanel.setOpaque(false);
+		tablePanel.setLayout(gbl);
+		
 		JPanel player1 = new JPanel();		// Client player
 		JPanel player2 = new JPanel();
 		JPanel player3 = new JPanel();
@@ -618,55 +623,26 @@ public class GUI
 		JPanel player6 = new JPanel();
 		JPanel player7 = new JPanel();
 		JPanel dealer = new JPanel();
-		
-		JButton hitButton = new JButton("Hit");
-		JButton standButton = new JButton("Stand");
-		
-		GridBagLayout layout = new GridBagLayout();
-		tablePanel.setLayout(layout);
-		tablePanel.setPreferredSize(new Dimension(1280 , 720));
-		tableTop.setLayout(layout);
-		
-		player1.setLayout(layout);
-		player2.setLayout(layout);
-		player3.setLayout(layout);
-		player4.setLayout(layout);
-		player5.setLayout(layout);
-		player6.setLayout(layout);
-		player7.setLayout(layout);
-		dealer.setLayout(layout);
-		
-		ArrayList<Card> cards = new ArrayList<>();
-		cards.add(new Card("5", Suit.DIAMONDS, 5));
-		cards.add(new Card("9", Suit.HEARTS, 9));
-		cards.add(new Card("Queen", Suit.HEARTS, 12));
-		cards.add(new Card("Ace", Suit.CLUBS, 1));
-		cards.add(new Card("2", Suit.SPADES, 2));
-		cards.add(new Card("Jack", Suit.CLUBS, 11));
-		cards.add(new Card("7", Suit.DIAMONDS, 7));
-		
-		gbc.insets = new Insets(0, 0, 0, 0);
-//		gbcPanel(tablePanel, player1, 3, 4, 1, 2);
-//		gbcPanel(tablePanel, player2, 2, 4, 1, 2);
-//		gbcPanel(tablePanel, player3, 4, 4, 1, 2);
-//		gbcPanel(tablePanel, player4, 1, 3, 1, 2);
-//		gbcPanel(tablePanel, player5, 5, 3, 1, 2);
-//		gbcPanel(tablePanel, player6, 0, 2, 1, 2);
-//		gbcPanel(tablePanel, player7, 7, 2, 1, 2);
-//		gbcPanel(tablePanel, dealer, 3, 1, 1, 3);
-//		gbcPanel(tablePanel, tableButtons, 0, 6, 8, 2);
-//		gbcPanel(tablePanel, tableTop, 0, 0, 8, 1);
-		tableButtons.add(hitButton);
-		tableButtons.add(standButton);
-		
-		gbcLayeredPane(player1, playerCardsGUI(cards), 0, 0, 1, 1);
-		gbcLayeredPane(player2, playerCardsGUI(cards), 0, 0, 1, 1);
-		gbcLayeredPane(player3, playerCardsGUI(cards), 0, 0, 1, 1);
-		gbcLayeredPane(player4, playerCardsGUI(cards), 0, 0, 1, 1);
-		gbcLayeredPane(player5, playerCardsGUI(cards), 0, 0, 1, 1);
-		gbcLayeredPane(player6, playerCardsGUI(cards), 0, 0, 1, 1);
-		gbcLayeredPane(player7, playerCardsGUI(cards), 0, 0, 1, 1);
-		gbcLayeredPane(dealer, playerCardsGUI(cards), 0, 0, 1, 1);
+		player1.setLayout(gbl);
+		player2.setLayout(gbl);
+		player3.setLayout(gbl);
+		player4.setLayout(gbl);
+		player5.setLayout(gbl);
+		player6.setLayout(gbl);
+		player7.setLayout(gbl);
+		dealer.setLayout(gbl);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbcPanel(tablePanel, new JPanel(), 0, 0, 8, 1, 1.0, 1.0);
+		gbcPanel(tablePanel, player1, 3, 4, 1, 2, 1.0, 1.0);
+		gbcPanel(tablePanel, player2, 2, 4, 1, 2, 1.0, 1.0);
+		gbcPanel(tablePanel, player3, 4, 4, 1, 2, 1.0, 1.0);
+		gbcPanel(tablePanel, player4, 1, 3, 1, 2, 1.0, 1.0);
+		gbcPanel(tablePanel, player5, 5, 3, 1, 2, 1.0, 1.0);
+		gbcPanel(tablePanel, player6, 0, 2, 1, 2, 1.0, 1.0);
+		gbcPanel(tablePanel, player7, 7, 2, 1, 2, 1.0, 1.0);
+		gbcPanel(tablePanel, dealer, 3, 1, 1, 3, 1.0, 1.0);
+		gbcPanel(tablePanel, tableButtons, 0, 6, 8, 2, 1.0, 1.0);
 	}
 	
 	public void playerGUI() {

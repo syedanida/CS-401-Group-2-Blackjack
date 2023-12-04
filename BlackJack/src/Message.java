@@ -11,7 +11,12 @@ enum MessageType {
     WITHDRAW,
     CHANGE_NAME,
     CHANGE_PASSWORD,
-    DELETE_ACCOUNT
+    DELETE_ACCOUNT,
+    WAGER, 
+    TURN, 
+    MOVE, 
+    UPDATEGUI,
+    QUIT
 }
 
 public class Message implements Serializable {
