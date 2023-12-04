@@ -22,6 +22,7 @@ public class Message implements Serializable {
     private MessageType type;
     private String userId;
     private String password;
+    private String displayName;
 
     // Fields specific to certain message types
     private String newUserName;
@@ -30,9 +31,9 @@ public class Message implements Serializable {
     private int withdrawAmount;
 
     // Constructors for different message types
-    public Message(MessageType type, String userId, String password) {
+    public Message(MessageType type, String displayName, String password) {
         this.type = type;
-        this.userId = userId;
+        this.displayName = displayName;
         this.password = password;
     }
 
@@ -65,6 +66,10 @@ public class Message implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+    
+    public String getDisplayName() {
+    	return displayName;
     }
 
     public String getNewUserName() {

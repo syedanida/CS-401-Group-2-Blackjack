@@ -14,7 +14,7 @@ public class GUI
 	private CardLayout cl = new CardLayout();
 	private GridBagLayout gbl = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
-	private GUIListener listener;
+	private Client client;
 	
 	private JPanel loginPanel = new JPanel();
 	private String loginUserText;
@@ -29,8 +29,10 @@ public class GUI
 	private JPanel tableButtons = new JPanel();
 	private int cardDistance = 15;
 
-	public GUI(Client listener)
+	public GUI(Client client)
 	{
+		this.client = client;
+		
 		// Creates black/green gradient background
 		contentPanel = new JPanel() {
 			@Override
@@ -47,15 +49,14 @@ public class GUI
                 g2d.dispose();
             }
 		};
-		this.listener = listener;
 		
 		// Sets up different pages of panel
 		contentPanel.setLayout(cl);
-		this.contentPanel.add(testPanel, "test");
-		this.contentPanel.add(loginPanel, "welcome");
-		this.contentPanel.add(menuPanel, "menu");
+		contentPanel.add(testPanel, "test");
+		contentPanel.add(loginPanel, "welcome");
+		contentPanel.add(menuPanel, "menu");
 		contentPanel.add(tablePanel, "table");
-		cl.show(contentPanel, "welcome");
+		cl.show(contentPanel, "menu");
 		
 		initializeTestPanel();
 		initializeLoginPanel();
@@ -78,11 +79,7 @@ public class GUI
 		contentFrame.pack();
 		contentFrame.addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent e) {
-		    	try {
-					closeConnection();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+		    	client.handleLogout();
 		    }
 		});
 	}
@@ -91,7 +88,7 @@ public class GUI
 //		return JButton;
 //	}
 	
-	public void initializeLoginPanel() 
+	private void initializeLoginPanel() 
 	{
 		JLabel msgLabel = new JLabel("test");
 		loginPanel.setBackground(new Color(0, 0, 0, 0));
@@ -208,7 +205,7 @@ public class GUI
         };
 		exitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				client.handleLogout();
 			}
 		});
 		exitPanel.addComponentListener(new ComponentAdapter() {
@@ -257,6 +254,14 @@ public class GUI
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.CENTER;
 		
+		/// Info Panel ///
+		JPanel infoPanel = new JPanel();
+		JLabel info = new JLabel();
+		info.setHorizontalAlignment(JLabel.CENTER);
+		info.setForeground(Color.YELLOW);
+		info.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		infoPanel.add(info);
+		
 		/// Top row ///
 		JPanel fieldPanel = new JPanel();
 		Font fieldFont = new Font("Arial", Font.PLAIN, 45);
@@ -281,7 +286,6 @@ public class GUI
 		gbc.insets = new Insets(0, 0, 0, 0);
 		
 		/// Bottom Row ///
-		JPanel infoPanel = new JPanel();
 		JPanel backPanel = new JPanel();
 		JPanel signinPanel = new JPanel();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -334,8 +338,16 @@ public class GUI
 		Image signinImage = new ImageIcon("data/login_button.png").getImage();
 		JButton signinButton = new JButton(new ImageIcon(signinImage));
         signinButton.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				loginUserText = userField.getText();
+				loginPassText = passField.getText();
+				if(loginUserText.isBlank() || loginPassText.isBlank()) {
+					info.setText("Please fill in empty field!");
+				} else {
+					info.setText("");
+					client.verifyUser(loginUserText, loginPassText);
+				}
 			}
 		});
         signinPanel.addComponentListener(new ComponentAdapter() {
@@ -379,7 +391,6 @@ public class GUI
 		gbcPanel(inputB, backPanel, 0, 2, 1, 1, 1.0, 0.0);
 		gbcPanel(inputB, signinPanel, 1, 2, 1, 1, 1.0, 0.0);
 		
-		
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbcPanel(loginPanel, imagePanel, 0, 0, 1, 1, 1.0, 1.0);
@@ -387,16 +398,15 @@ public class GUI
 		gbcPanel(loginPanel, inputPanel, 0, 1, 1, 1, 1.0, 1.0);
 		System.out.println("Login panel created.");
 	}
-	
-	public void initializeMenuPanel() 
+
+	private void initializeMenuPanel() 
 	{
-		JPanel buttonPanel = new JPanel();
-		JPanel titlePanel = new JPanel();
-		JPanel exitPanel = new JPanel();
-		JPanel imagePanel = new JPanel();
-		
-		menuPanel.setBackground(new Color(0, 100, 0));
 		menuPanel.setLayout(new GridBagLayout());
+		menuPanel.setBackground(new Color(0, 0, 0, 0));
+		menuPanel.setOpaque(false);
+		menuPanel.setLayout(gbl);
+		
+		
 		
 //		gbcPanel(menuPanel, titlePanel, 0, 0, 1, 1);
 //		gbcPanel(menuPanel, buttonPanel, 0, 1, 1, 2);
@@ -406,7 +416,7 @@ public class GUI
 		
 	}
 	
-	public void initializeTablePanel() 
+	private void initializeTablePanel() 
 	{
 		JPanel player1 = new JPanel();		// Client player
 		JPanel player2 = new JPanel();
@@ -472,7 +482,7 @@ public class GUI
 	}
 	
 	// Method which creates visualization of hand of cards
-	public JLayeredPane playerCardsGUI(ArrayList<Card> cards) 
+	private JLayeredPane playerCardsGUI(ArrayList<Card> cards) 
 	{
 		JLayeredPane layeredPane = new JLayeredPane();
 		JPanel panel = new JPanel();
@@ -564,9 +574,12 @@ public class GUI
 		container.add(component, gbc);
 	}
 	
+	public void loginSuccess() {
+		cl.show(contentPanel, "menu");
+	}
+	
 	public void closeConnection() throws IOException 
 	{
-		listener.guiExit();
 		System.exit(0);
 	}
 	

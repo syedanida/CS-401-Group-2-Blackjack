@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Client implements GUIListener{
+public class Client{
 
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 6000;
@@ -10,40 +10,35 @@ public class Client implements GUIListener{
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private BufferedReader scanner;
-    GUI gui;
+    private GUI gui;
 
-    public Client() {
+    public Client() 
+    {
         scanner = new BufferedReader(new InputStreamReader(System.in));
         gui = new GUI(this);
     }
 
-    public void connectToServer() {
+    public void connectToServer() 
+    {
         try {
-            // Connect to the server
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
-            
-            verifyUser();
-            handleUserOptions();
+            System.out.println("Server connected: " + socket);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
-    private void verifyUser() {
+    public void verifyUser(String username, String password) 
+    {
         try {
         	boolean authenticated = false;
-        	while (!authenticated){
-            // Ask the user for user ID and password
-            System.out.println("Enter your user ID:");
-            String userId = scanner.readLine();
-            System.out.println("Enter your password:");
-            String password = scanner.readLine();
-
-            // Create a LOGIN message with userId and password as payload
-            Message loginMessage = new Message(MessageType.LOGIN, userId, password);
+        	
+        	// Create a LOGIN message with username and password
+            Message loginMessage = new Message(MessageType.LOGIN, username, password);
             sendMessage(loginMessage);
+            System.out.println("Requesting login: " + username + ", " + password);
 
             // Wait for the server response (authentication status)
             String authenticationResponse = (String) inputStream.readObject();
@@ -51,15 +46,15 @@ public class Client implements GUIListener{
             
            if(authenticationResponse.equals("Authentication successful. You are now connected.")) {
         	   authenticated = true;
+        	   gui.loginSuccess();
         	   return;
            	}
-        	}
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-private void handleUserOptions() {
+    private void handleUserOptions() {
 	
             System.out.println("Select an option:");
             System.out.println("1. Find a table");
@@ -211,7 +206,7 @@ private void handleUserOptions() {
 		}
     }
     
-    private void handleLogout() {
+    public void handleLogout() {
         try {
             outputStream.writeObject(new Message(MessageType.LOGOUT, null, null));
             // Check if the server has responded or handle accordingly
@@ -256,16 +251,4 @@ private void handleUserOptions() {
         Client client = new Client();
         client.connectToServer();
     }
-
-	@Override
-	public void guiVerifyLogin(String username, String password) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void guiExit() throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
 }

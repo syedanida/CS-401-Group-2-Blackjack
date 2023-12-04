@@ -12,7 +12,7 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket clientSocket, Server server) {
         this.clientSocket = clientSocket;
         this.server = server;
-
+        
         try {
         	outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             inputStream = new ObjectInputStream(clientSocket.getInputStream());
@@ -25,17 +25,16 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
         	boolean pass = false;
-        	while (!pass) {
-        		Message receivedMessage = (Message) inputStream.readObject();
-            	pass = handleLogin(receivedMessage);
-        	}
+        	Message receivedMessage = (Message) inputStream.readObject();
+        	pass = handleLogin(receivedMessage);
+        	
         	
         	// Continuously handle client messages
             while (true) {
             	
             	Message clientMessage = (Message) inputStream.readObject();
             	// Check for log out message
-            	if(clientMessage.getType() == Message.MessageType.LOGOUT) {
+            	if(clientMessage.getType() == MessageType.LOGOUT) {
             		break;
             	} else {
             		// Process the received message
@@ -78,10 +77,13 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private boolean handleLogin(Message message) throws IOException {
+    private boolean handleLogin(Message message) throws IOException 
+    {
         String userId = message.getUserId();
         String password = message.getPassword();
         boolean verified = false;
+        
+        System.out.println("Client login request: " + userId + ", " + password);
 
         if (server.verifyCredentials(userId, password)) {
             player = server.getPlayer(userId);
