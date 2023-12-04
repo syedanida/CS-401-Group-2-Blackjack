@@ -56,7 +56,7 @@ public class GUI
 		contentPanel.add(loginPanel, "welcome");
 		contentPanel.add(menuPanel, "menu");
 		contentPanel.add(tablePanel, "table");
-		cl.show(contentPanel, "menu");
+		cl.show(contentPanel, "welcome");
 		
 		initializeTestPanel();
 		initializeLoginPanel();
@@ -79,7 +79,8 @@ public class GUI
 		contentFrame.pack();
 		contentFrame.addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent e) {
-		    	client.handleLogout();
+		    	//client.handleLogout();
+		    	System.exit(0);
 		    }
 		});
 	}
@@ -406,14 +407,205 @@ public class GUI
 		menuPanel.setOpaque(false);
 		menuPanel.setLayout(gbl);
 		
+		/// Button panel ///
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(gbl);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
 		
+		/// Find table button ///
+		JPanel findTablePanel = new JPanel();
+		Image findTableImage = new ImageIcon("data/findTable_button.png").getImage();
+		JButton findTableButton = new JButton(new ImageIcon(findTableImage)) {
+		    @Override
+		    public Dimension getPreferredSize() {
+		        int height = findTablePanel.getHeight();
+		        int width = (int) (height * (5.0 / 2.0));
+		        return new Dimension(width, height);
+		    }
+		};
+		findTableButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        cl.show(contentPanel, "welcome");
+		    }
+		});
+		 findTablePanel.addComponentListener(new ComponentAdapter() {
+		    @Override
+		    public void componentResized(ComponentEvent e) {
+		        int buttonWidth = findTableButton.getWidth();
+		        int buttonHeight = findTableButton.getHeight();
+		        Image scaledImage = findTableImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+		        findTableButton.setIcon(new ImageIcon(scaledImage));
+		        findTablePanel.revalidate();
+		        findTablePanel.repaint();
+		    }
+		 });
+		findTableButton.addMouseListener(new MouseAdapter() {
+		    public void mouseEntered(MouseEvent evt) {
+		        findTablePanel.revalidate();
+		        findTablePanel.repaint();
+		    }
+
+		    public void mouseExited(MouseEvent evt) {
+		        findTablePanel.revalidate();
+		        findTablePanel.repaint();
+		    }
+		});
+		findTableButton.setBackground(new Color(0, 0, 0, 0));
+		findTableButton.setOpaque(false);
+		findTableButton.setBorderPainted(false);
+		findTableButton.setFocusPainted(false);
+		findTableButton.setPreferredSize(new Dimension(250, 100));
+		findTablePanel.add(findTableButton);
 		
-//		gbcPanel(menuPanel, titlePanel, 0, 0, 1, 1);
-//		gbcPanel(menuPanel, buttonPanel, 0, 1, 1, 2);
-//		gbcPanel(menuPanel, new JPanel(), 0, 3, 1, 1);
-//		gbcPanel(menuPanel, exitPanel, 0, 4, 1, 1);
-//		gbcPanel(menuPanel, imagePanel, 1, 0, 2, 5);
+		/// Bank details button ///
+		JPanel bankPanel = new JPanel();
+		Image bankImage = new ImageIcon("data/bank_button.png").getImage();
+		JButton bankButton = new JButton(new ImageIcon(bankImage)) {
+		    @Override
+		    public Dimension getPreferredSize() {
+		        int height = bankPanel.getHeight();
+		        int width = (int) (height * (5.0 / 2.0));
+		        return new Dimension(width, height);
+		    }
+		};
+		bankButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        cl.show(contentPanel, "welcome");
+		    }
+		});
+		 bankPanel.addComponentListener(new ComponentAdapter() {
+		    @Override
+		    public void componentResized(ComponentEvent e) {
+		        int buttonWidth = bankButton.getWidth();
+		        int buttonHeight = bankButton.getHeight();
+		        Image scaledImage = bankImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+		        bankButton.setIcon(new ImageIcon(scaledImage));
+		        bankPanel.revalidate();
+		        bankPanel.repaint();
+		    }
+		 });
+		bankButton.addMouseListener(new MouseAdapter() {
+		    public void mouseEntered(MouseEvent evt) {
+		        bankPanel.revalidate();
+		        bankPanel.repaint();
+		    }
+		    public void mouseExited(MouseEvent evt) {
+		        bankPanel.revalidate();
+		        bankPanel.repaint();
+		    }
+		});
+		bankButton.setBackground(new Color(0, 0, 0, 0));
+		bankButton.setOpaque(false);
+		bankButton.setBorderPainted(false);
+		bankButton.setFocusPainted(false);
+		bankButton.setPreferredSize(new Dimension(250, 100));
+		bankPanel.add(bankButton);
+
+		/// Settings button ///
+		JPanel settingsPanel = new JPanel();
+		Image settingsImage = new ImageIcon("data/settings_button.png").getImage();
+		JButton settingsButton = new JButton(new ImageIcon(settingsImage)) {
+		    @Override
+		    public Dimension getPreferredSize() {
+		        int height = settingsPanel.getHeight();
+		        int width = (int) (height * (5.0 / 2.0));
+		        return new Dimension(width, height);
+		    }
+		};
+		settingsButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        cl.show(contentPanel, "welcome");
+		    }
+		});
+		 settingsPanel.addComponentListener(new ComponentAdapter() {
+		    @Override
+		    public void componentResized(ComponentEvent e) {
+		        int buttonWidth = settingsButton.getWidth();
+		        int buttonHeight = settingsButton.getHeight();
+		        Image scaledImage = settingsImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+		        settingsButton.setIcon(new ImageIcon(scaledImage));
+		        settingsPanel.revalidate();
+		        settingsPanel.repaint();
+		    }
+		 });
+		settingsButton.addMouseListener(new MouseAdapter() {
+		    public void mouseEntered(MouseEvent evt) {
+		        settingsPanel.revalidate();
+		        settingsPanel.repaint();
+		    }
+
+		    public void mouseExited(MouseEvent evt) {
+		        settingsPanel.revalidate();
+		        settingsPanel.repaint();
+		    }
+		});
+		settingsButton.setBackground(new Color(0, 0, 0, 0));
+		settingsButton.setOpaque(false);
+		settingsButton.setBorderPainted(false);
+		settingsButton.setFocusPainted(false);
+		settingsButton.setPreferredSize(new Dimension(250, 100));
+		settingsPanel.add(settingsButton);
+
 		
+		/// Logout button ///
+		JPanel logoutPanel = new JPanel();
+		Image logoutImage = new ImageIcon("data/logout_button.png").getImage();
+		JButton logoutButton = new JButton(new ImageIcon(logoutImage)) {
+            @Override
+            public Dimension getPreferredSize() {
+                int height = logoutPanel.getHeight();
+                int width = (int) (height * (5.0 / 2.0));
+                return new Dimension(width, height);
+            }
+        };
+        logoutButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				client.handleLogout();
+			}
+		});
+        logoutPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+            public void componentResized(ComponentEvent e) {
+				int buttonWidth = logoutButton.getWidth();
+				int buttonHeight = logoutButton.getHeight();
+				Image scaledImage = logoutImage.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+				logoutButton.setIcon(new ImageIcon(scaledImage));
+				logoutPanel.revalidate();
+				logoutPanel.repaint();
+            }
+		});
+        logoutButton.addMouseListener(new MouseAdapter() {
+		    public void mouseEntered(MouseEvent evt) {
+		    	logoutPanel.revalidate();
+		    	logoutPanel.repaint();
+		    }
+
+		    public void mouseExited(MouseEvent evt) {
+		    	logoutPanel.revalidate();
+		    	logoutPanel.repaint();
+		    }
+		});
+        logoutButton.setBackground(new Color(0, 0, 0, 0));
+        logoutButton.setOpaque(false);
+        logoutButton.setBorderPainted(false);
+        logoutButton.setFocusPainted(false);
+        logoutButton.setPreferredSize(new Dimension(250, 100));
+        logoutPanel.add(logoutButton);
+        
+		
+
+		JPanel bPanel = new JPanel();
+		bPanel.setPreferredSize(new Dimension(500, 1000));
+		bPanel.add(buttonPanel);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbcPanel(menuPanel, buttonPanel, 0, 0, 1, 1, 1.0, 1.0);
+		gbcPanel(buttonPanel, findTablePanel, 0, 0, 1, 1, 1.0, 1.0);
+		gbcPanel(buttonPanel, bankPanel, 0, 1, 1, 1, 1.0, 1.0);
+		gbcPanel(buttonPanel, settingsPanel, 0, 2, 1, 1, 0.0, 1.0);
+		gbcPanel(buttonPanel, logoutPanel, 0, 3, 1, 1, 1.0, 1.0);
+		gbcPanel(menuPanel, new JPanel(), 1, 0, 1, 1, 1.0, 1.0);
+		gbcPanel(menuPanel, new JPanel(), 2, 0, 1, 1, 1.0, 1.0);
 	}
 	
 	private void initializeTablePanel() 

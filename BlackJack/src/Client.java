@@ -11,6 +11,9 @@ public class Client{
     private ObjectOutputStream outputStream;
     private BufferedReader scanner;
     private GUI gui;
+    
+    private String clientID;
+    private String clientDisplayName;
 
     public Client() 
     {
@@ -44,8 +47,10 @@ public class Client{
             String authenticationResponse = (String) inputStream.readObject();
             System.out.println(authenticationResponse);
             
-           if(authenticationResponse.equals("Authentication successful. You are now connected.")) {
+           if(authenticationResponse.equals("Authen"
+           		+ "tication successful. You are now connected.")) {
         	   authenticated = true;
+        	   clientDisplayName = username;
         	   gui.loginSuccess();
         	   return;
            	}
@@ -208,12 +213,11 @@ public class Client{
     
     public void handleLogout() {
         try {
-            outputStream.writeObject(new Message(MessageType.LOGOUT, null, null));
+            outputStream.writeObject(new Message(MessageType.LOGOUT, clientDisplayName, null));
             // Check if the server has responded or handle accordingly
             String loginResponse = (String) inputStream.readObject();
             System.out.println(loginResponse);
         } catch (IOException | ClassNotFoundException e) {
-            // Handle IOException and ClassNotFoundException
             e.printStackTrace();
         } finally {
             // Ensure resources are properly closed, even in case of exceptions

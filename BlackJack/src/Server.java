@@ -164,6 +164,7 @@ public class Server {
                     handleSettings(message);
                     break;
                 case LOGOUT: {
+                	System.out.println("Client " + message.getDisplayName() + " initiating logout.");
                     handleLogout(message);
                     break;
                 }
