@@ -109,6 +109,7 @@ private void handleUserOptions() {
         		handleWithdraw();
         	}
         	if (answer.equals("3"))
+        		sendMessage(new Message(Message.MessageType.MAIN_MENU, null, null));
         		handleUserOptions();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -168,6 +169,7 @@ private void handleUserOptions() {
         		changePassword();
         	}
         	if (answer.equals("3"))
+        		sendMessage(new Message(Message.MessageType.MAIN_MENU, null, null));
         		handleUserOptions();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
