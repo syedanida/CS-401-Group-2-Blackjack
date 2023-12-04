@@ -24,15 +24,23 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-        	// Continuously handle client messages
-        	Message receivedMessage = (Message) inputStream.readObject();
+        	boolean pass = false;
+        	while (!pass) {
+        		Message receivedMessage = (Message) inputStream.readObject();
+            	pass = handleLogin(receivedMessage);
+        	}
         	
-        	handleLogin(receivedMessage);
+        	// Continuously handle client messages
             while (true) {
             	
             	Message clientMessage = (Message) inputStream.readObject();
-                // Process the received message
-                processMessage(clientMessage);
+            	// Check for log out message
+            	if(clientMessage.getType() == Message.MessageType.LOGOUT) {
+            		break;
+            	} else {
+            		// Process the received message
+                    processMessage(clientMessage);
+            	}
             }
             // Handle the client connection
         } catch (IOException e) {
@@ -50,51 +58,41 @@ public class ClientHandler implements Runnable {
     		 outputStream.writeObject("Invalid message received.");
     	        return;
     	    }
-    	 boolean loggedin = true;
-    	 while (loggedin = true) {
     	 
         switch (message.getType()) {
-//            case LOGIN:
-//                handleLogin(message);
-//                break;
             case FIND_TABLE:
-            	//System.out.println("calling findtable case");
                 handleFindTable(message);
                 break;
             case BANK_DETAILS:
-            	//System.out.println("calling bankdetails case");
                 handleBankDetails();
                 break;
             case SETTINGS:
-            	//System.out.println("calling settings case");
                 handleSettings(message);
                 break;
             case LOGOUT: {
                 handleLogout(message);
-                loggedin = false;
                 break;
             }
             default:
             	outputStream.writeObject("Invalid message type.");
         }
     }
-    }
 
     private boolean handleLogin(Message message) throws IOException {
         String userId = message.getUserId();
         String password = message.getPassword();
-        boolean success = false;
+        boolean verified = false;
 
         if (server.verifyCredentials(userId, password)) {
             player = server.getPlayer(userId);
             outputStream.writeObject("Authentication successful. You are now connected.");
-            success = true;
-            return success;
+            verified = true;
+            return verified;
         } else {
-        	outputStream.writeObject("Invalid credentials. Connection terminated.");
-        	closeResources();
+        	outputStream.writeObject("Invalid credentials. Try again!");
+        	return verified;
+        	//closeResources();
         }
-		return success;
     }
 
     private void handleFindTable(Message message) {
@@ -206,7 +204,7 @@ public class ClientHandler implements Runnable {
             Message receivedMessage = (Message) inputStream.readObject();
 
             // Perform password change
-//            player.setPassword(receivedMessage.getNewPassword());
+            player.setPassword(receivedMessage.getNewPassword());
 
             // Notify the user about the password change
             outputStream.writeObject("Your password has been changed successfully!");
