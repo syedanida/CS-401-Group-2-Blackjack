@@ -6,11 +6,12 @@ public class Player implements CardPlayer {
 	private String id;
 	private String displayName;
 	private String password;
-	private int balance;
-	private int currWager;
+	private double balance;
+	private double currWager;
 	private MOVE currMove;
 	private ArrayList<Card> playerHand;
 	private int handValue;
+	private double winnings;
 	private Socket socket;
 
 	public Player() {
@@ -18,26 +19,24 @@ public class Player implements CardPlayer {
 		playerHand = new ArrayList<>();
 	}
 
-	public Player(String name, String pass, int bal) {
+	public Player(String name, String pass, double bal) {
 		id = Integer.toString(idCounter++);
 		displayName = name;
 		password = pass;
-		// balance = some minimum value to start off
 		balance = bal;
 		playerHand = new ArrayList<>();
 
 	}
 
-	public Player(String userID, String name, String pass, int bal) {
+	public Player(String userID, String name, String pass, double bal) {
 		id = userID;
 		password = pass;
-		// balance = some minimum value to start off
 		balance = bal;
 		playerHand = new ArrayList<>();
 
 	}
 
-	public void deposit(int amount) {
+	public void deposit(double amount) {
 		balance += amount;
 	}
 
@@ -56,16 +55,9 @@ public class Player implements CardPlayer {
 
 		result += "\nhandValue = " + handValue;
 		return result;
-
-//		String hand = "";
-//		for (Card card : playerHand) {
-//			hand += card.getCardRank() + " of " + card.getCardSuit() + ", ";
-//		}
-//		return "\nid=" + id + "\ndisplayName=" + displayName + "\nbalance=" + balance + "\ncurrWager=" + currWager
-//				+ "\ncurrMove=" + currMove.name() + "\nplayerHand=" + hand + "\nhandValue=" + handValue;
 	}
 
-	public void withdraw(int amount) {
+	public void withdraw(double amount) {
 		if (amount > balance) {
 			// notify of insufficient funds
 			return;
@@ -91,19 +83,19 @@ public class Player implements CardPlayer {
 
 	// May not require setter for password
 
-	public int getBalance() {
+	public double getBalance() {
 		return balance;
 	}
 
-	public void setBalance(int balance) {
+	public void setBalance(double balance) {
 		this.balance = balance;
 	}
 
-	public int getCurrWager() {
+	public double getCurrWager() {
 		return currWager;
 	}
 
-	public void setCurrWager(int currWager) {
+	public void setCurrWager(double currWager) {
 		this.currWager = currWager;
 	}
 
@@ -153,4 +145,17 @@ public class Player implements CardPlayer {
 	public Object getPassword() {
 		return password;
 	}
+
+	public void setPassword(Object pass) {
+		this.password = (String) pass;
+	}
+
+	public double getWinnings() {
+		return winnings;
+	}
+
+	public void setWinnings(double winnings) {
+		this.winnings = winnings;
+	}
+
 }

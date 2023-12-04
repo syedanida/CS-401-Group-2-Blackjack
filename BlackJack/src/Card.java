@@ -95,6 +95,7 @@ public class Card {
 		return new ImageIcon(resizedImage);
 	}
 
+	// Method to generate a path
 	private String generatePath() {
 
 		return "C:\\Users\\dqjon\\Documents\\books\\Software Engineering\\HW Assignments"

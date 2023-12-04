@@ -53,7 +53,7 @@ public class Deck {
 		// Switch statement to determine the rank of a card based on its value
 		switch (value) {
 		case 1:
-			return "Ace"; // ---> Check this!
+			return "Ace";
 		case 11:
 			return "Jack";
 		case 12:
