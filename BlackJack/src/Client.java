@@ -213,8 +213,8 @@ private void handleUserOptions() {
         try {
             outputStream.writeObject(new Message(Message.MessageType.LOGOUT, null, null));
             // Check if the server has responded or handle accordingly
-            String loginResponse = (String) inputStream.readObject();
-            System.out.println(loginResponse);
+            String logoutResponse = (String) inputStream.readObject();
+            System.out.println(logoutResponse);
         } catch (IOException | ClassNotFoundException e) {
             // Handle IOException and ClassNotFoundException
             e.printStackTrace();
