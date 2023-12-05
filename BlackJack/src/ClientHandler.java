@@ -121,6 +121,9 @@ public class ClientHandler implements Runnable {
                     // Withdraw
                     handleWithdraw();
                     break;
+                case MAIN_MENU:
+                	// Return to main menu
+                	return;
                 default:
                     // Invalid choice
                     outputStream.writeObject("Invalid option. Please try again.");
@@ -150,6 +153,9 @@ public class ClientHandler implements Runnable {
                     // Withdraw
                     changePassword();
                     break;
+                case MAIN_MENU:
+                	// Return to main menu
+                	return;
                 default:
                     // Invalid choice
                     outputStream.writeObject("Invalid option. Please try again.");
