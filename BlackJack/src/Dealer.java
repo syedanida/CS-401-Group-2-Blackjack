@@ -49,4 +49,8 @@ public class Dealer implements CardPlayer {
 	public void setHandValue(int handValue) {
 		this.handValue = handValue;
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main

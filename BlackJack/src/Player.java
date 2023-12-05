@@ -80,8 +80,15 @@ public class Player implements CardPlayer {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+<<<<<<< HEAD
 
 	// May not require setter for password
+=======
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+>>>>>>> main
 
 	public double getBalance() {
 		return balance;
