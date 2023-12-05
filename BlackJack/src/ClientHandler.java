@@ -123,7 +123,7 @@ public class ClientHandler implements Runnable {
                     break;
                 default:
                     // Invalid choice
-                    outputStream.writeObject("Invalid option. Please try again. bankdetails");
+                    outputStream.writeObject("Invalid option. Please try again.");
                     break;
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -152,7 +152,7 @@ public class ClientHandler implements Runnable {
                     break;
                 default:
                     // Invalid choice
-                    outputStream.writeObject("Invalid option. Please try again. handlesettings");
+                    outputStream.writeObject("Invalid option. Please try again.");
                     break;
             }
         } catch (IOException | ClassNotFoundException e) {
