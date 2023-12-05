@@ -19,9 +19,7 @@ public class Server {
         playerMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("data/userdata.txt"))) {
             String line;
-            System.out.println("Contents of userdata.txt:");
             while ((line = reader.readLine()) != null) {
-            	System.out.println(line); // for testing purposes
                 String[] userDataArray = line.split(",");
                 // Separates data values into array
                 if (userDataArray.length == 4) {
@@ -37,6 +35,19 @@ public class Server {
                     System.out.println("Invalid data format in line: " + line);
                     System.exit(0);
                 }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    protected void savePlayerDataToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/userdata.txt"))) {
+            for (Player player : playerMap.values()) {
+                String userData = String.format("%s,%s,%s,%d",
+                        player.getId(), player.getPassword(), player.getDisplayName(), player.getBalance());
+                writer.write(userData);
+                writer.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace();

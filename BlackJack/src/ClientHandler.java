@@ -36,6 +36,7 @@ public class ClientHandler implements Runnable {
             	Message clientMessage = (Message) inputStream.readObject();
             	// Check for log out message
             	if(clientMessage.getType() == Message.MessageType.LOGOUT) {
+                    outputStream.writeObject("Logout successful. Goodbye!");
             		break;
             	} else {
             		// Process the received message
@@ -169,6 +170,9 @@ public class ClientHandler implements Runnable {
 
             // Perform the deposit
             player.deposit(receivedMessage.getDepositAmount());
+            
+            // Save changes to data file
+            server.savePlayerDataToFile();
 
             // Notify the user about the successful deposit
             outputStream.writeObject("Deposit successful. Your new balance: " + player.getBalance());
@@ -187,6 +191,9 @@ public class ClientHandler implements Runnable {
 
             // Perform the withdrawal
             player.withdraw(receivedMessage.getWithdrawAmount());
+            
+            // Save changes to data file
+            server.savePlayerDataToFile();
 
             // Notify the user about the result of the withdrawal
             outputStream.writeObject("Withdrawal successful. Your new balance: " + player.getBalance());
@@ -205,6 +212,9 @@ public class ClientHandler implements Runnable {
 
             // Perform password change
             player.setPassword(receivedMessage.getNewPassword());
+            
+            // Save changes to data file
+            server.savePlayerDataToFile();
 
             // Notify the user about the password change
             outputStream.writeObject("Your password has been changed successfully!");
@@ -224,6 +234,9 @@ public class ClientHandler implements Runnable {
 
             // Perform the display name change
             player.setDisplayName(receivedMessage.getNewUserName());
+            
+            // Save changes to data file
+            server.savePlayerDataToFile();
 
             // Notify the user about the result of the withdrawal
             outputStream.writeObject("Display name change succesful. Your new display name: " + player.getDisplayName());
