@@ -242,8 +242,8 @@ public class Table {
 			 * those who also have 21 Players that have the same hand value as the dealer
 			 * keep their wager and gain no winnings (unless value is 21)
 			 */
-			int initialBalance = players.get(i).getBalance();
-			int wager = players.get(i).getCurrWager();
+			double initialBalance = players.get(i).getBalance();
+			double wager = players.get(i).getCurrWager();
 			int handValue = players.get(i).getHandValue();
 			String playerName = players.get(i).getDisplayName();
 
@@ -258,8 +258,7 @@ public class Table {
 			} else if (handValue == 21 || handValue > dealer.getHandValue() || dealer.getHandValue() > 21) {// win
 																											// conditions
 				System.out.println("\n" + playerName + " has won the round.");
-				System.out.println("\nBEFORE: \n\t" + playerName + "\n\tBalance: " + initialBalance + "\n\tWinnings: "
-						+ Integer.toString(2 * wager));
+				System.out.println("\nBEFORE: \n\t" + playerName + "\n\tBalance: " + initialBalance + "\n\tWinnings: " + Double.toString(2 * wager));
 				players.get(i).setBalance(initialBalance + 2 * wager);
 
 				System.out.println("\nAFTER: \n" + playerName + "\n\tBalance: " + players.get(i).getBalance());
