@@ -1,12 +1,6 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class Server {
 
@@ -25,9 +19,7 @@ public class Server {
         playerMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("data/userdata.txt"))) {
             String line;
-            System.out.println("Contents of userdata.txt:");
             while ((line = reader.readLine()) != null) {
-            	System.out.println(line); // for testing purposes
                 String[] userDataArray = line.split(",");
                 // Separates data values into array
                 if (userDataArray.length == 4) {
@@ -43,6 +35,19 @@ public class Server {
                     System.out.println("Invalid data format in line: " + line);
                     System.exit(0);
                 }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    protected void savePlayerDataToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/userdata.txt"))) {
+            for (Player player : playerMap.values()) {
+                String userData = String.format("%s,%s,%s,%d",
+                        player.getId(), player.getPassword(), player.getDisplayName(), player.getBalance());
+                writer.write(userData);
+                writer.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,7 +70,7 @@ public class Server {
 
     public Table findSeat(Player player) {
         for (Table table : tables) {
-            if (!table.isFull()) {
+            if (!table.isTableFull()) {
                 table.addPlayer(player);
                 return table;
             }
