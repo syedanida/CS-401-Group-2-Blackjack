@@ -5,7 +5,7 @@ enum Suit {
 
 public class Card {
 
-	private boolean isDrawn; // Flag ifthe card has been drawn
+	private boolean isDrawn; // Flag if the card has been drawn
 	private String rank; // Rank of the card
 	private Suit suit; // Suit of the card
 	private int value; // Values of the card

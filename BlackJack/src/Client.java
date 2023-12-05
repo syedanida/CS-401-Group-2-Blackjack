@@ -243,7 +243,6 @@ private void handleUserOptions() {
         }
     }
 
-
     private void sendMessage(Message message) {
         try {
             outputStream.writeObject(message);
