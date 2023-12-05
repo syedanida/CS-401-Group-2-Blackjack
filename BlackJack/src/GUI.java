@@ -624,6 +624,7 @@ public class GUI
 		JPanel player7 = new JPanel();
 		JPanel dealer = new JPanel();
 		player1.setLayout(gbl);
+		player1.setBackground(new Color(0, 38, 8));
 		player2.setLayout(gbl);
 		player3.setLayout(gbl);
 		player4.setLayout(gbl);
@@ -643,6 +644,22 @@ public class GUI
 		gbcPanel(tablePanel, player7, 7, 2, 1, 2, 1.0, 1.0);
 		gbcPanel(tablePanel, dealer, 3, 1, 1, 3, 1.0, 1.0);
 		gbcPanel(tablePanel, tableButtons, 0, 6, 8, 2, 1.0, 1.0);
+		ArrayList<Card> cards = new ArrayList<>();
+		cards.add(new Card("5", Suit.DIAMONDS, 5));
+		cards.add(new Card("9", Suit.HEARTS, 9));
+		cards.add(new Card("Queen", Suit.HEARTS, 12));
+		cards.add(new Card("Ace", Suit.CLUBS, 1));
+		cards.add(new Card("2", Suit.SPADES, 2));
+		cards.add(new Card("Jack", Suit.CLUBS, 11));
+		cards.add(new Card("7", Suit.DIAMONDS, 7));
+		gbcLayeredPane(player1, playerCardsGUItest(cards, player1), 0, 0, 1, 1);
+		gbcLayeredPane(player2, playerCardsGUItest(cards, player2), 0, 0, 1, 1);
+		gbcLayeredPane(player3, playerCardsGUItest(cards, player3), 0, 0, 1, 1);
+		gbcLayeredPane(player4, playerCardsGUItest(cards, player4), 0, 0, 1, 1);
+		gbcLayeredPane(player5, playerCardsGUItest(cards, player5), 0, 0, 1, 1);
+		gbcLayeredPane(player6, playerCardsGUItest(cards, player6), 0, 0, 1, 1);
+		gbcLayeredPane(player7, playerCardsGUItest(cards, player7), 0, 0, 1, 1);
+		gbcLayeredPane(dealer, playerCardsGUItest(cards, dealer), 0, 0, 1, 1);
 	}
 	
 	public void playerGUI() {
@@ -685,7 +702,7 @@ public class GUI
 		gbc.gridheight = h;
 		gbc.weightx = weightx;
 		gbc.weighty = weighty;
-		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 		component.setBackground(new Color(0, 0, 0, 0));
 		component.setOpaque(false);
 		container.add(component, gbc);
@@ -700,7 +717,7 @@ public class GUI
 		gbc.gridheight = h;
 		gbc.weightx = weightx;
 		gbc.weighty = weighty;
-		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 		container.add(component, gbc);
 	}
 	
@@ -713,7 +730,7 @@ public class GUI
 		gbc.gridheight = h;
 		gbc.weightx = weightx;
 		gbc.weighty = weighty;
-		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 		container.add(component, gbc);
 	}
 	
@@ -726,7 +743,7 @@ public class GUI
 		gbc.gridheight = h;
 		gbc.weightx = weightx;
 		gbc.weighty = weighty;
-		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 		container.add(component, gbc);
 	}
 	
@@ -738,7 +755,7 @@ public class GUI
 		gbc.gridheight = h;
 		gbc.weightx = 0.0;
 		gbc.weighty = 0.0;
-		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
+//		component.setBorder(new TitledBorder("(" + x + ", " + y + ")"));
 		container.add(component, gbc);
 	}
 	
@@ -826,7 +843,7 @@ public class GUI
 	{
 		JLayeredPane layeredPane = new JLayeredPane();
 		JPanel panel = new JPanel();
-		layeredPane.setBackground(Color.red);
+		layeredPane.setBackground(new Color(0, 0, 0, 0));
 		layeredPane.setOpaque(true);
 //		layeredPane.setLayout(new GridBagLayout());
 		// bounds = width: cardWidth + (cardDistance 
