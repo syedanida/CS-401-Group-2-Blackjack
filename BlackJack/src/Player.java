@@ -1,3 +1,5 @@
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -11,8 +13,10 @@ public class Player implements CardPlayer {
 	private MOVE currMove;
 	private ArrayList<Card> playerHand;
 	private int handValue;
-	private double winnings;
+	private double winnings; 
 	private Socket socket;
+	private ObjectOutputStream outputStream;
+    private ObjectInputStream inputStream;
 
 	public Player() {
 		id = Integer.toString(idCounter++);
@@ -23,14 +27,16 @@ public class Player implements CardPlayer {
 		id = Integer.toString(idCounter++);
 		displayName = name;
 		password = pass;
+		// balance = some minimum value to start off
 		balance = bal;
 		playerHand = new ArrayList<>();
 
 	}
 
-	public Player(String userID, String name, String pass, double bal) {
+	public Player(String userID, String pass, String name, double bal) {
 		id = userID;
 		password = pass;
+		displayName = name;
 		balance = bal;
 		playerHand = new ArrayList<>();
 
@@ -55,6 +61,13 @@ public class Player implements CardPlayer {
 
 		result += "\nhandValue = " + handValue;
 		return result;
+
+//		String hand = "";
+//		for (Card card : playerHand) {
+//			hand += card.getCardRank() + " of " + card.getCardSuit() + ", ";
+//		}
+//		return "\nid=" + id + "\ndisplayName=" + displayName + "\nbalance=" + balance + "\ncurrWager=" + currWager
+//				+ "\ncurrMove=" + currMove.name() + "\nplayerHand=" + hand + "\nhandValue=" + handValue;
 	}
 
 	public void withdraw(double amount) {
@@ -80,15 +93,8 @@ public class Player implements CardPlayer {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-<<<<<<< HEAD
 
 	// May not require setter for password
-=======
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
->>>>>>> main
 
 	public double getBalance() {
 		return balance;
@@ -149,11 +155,11 @@ public class Player implements CardPlayer {
 		this.socket = socket;
 	}
 
-	public Object getPassword() {
+	public String getPassword() {
 		return password;
 	}
-
-	public void setPassword(Object pass) {
+	
+	public void setPassword(Object pass) { // Not sure why this is type object but i casted it to String
 		this.password = (String) pass;
 	}
 
@@ -164,5 +170,18 @@ public class Player implements CardPlayer {
 	public void setWinnings(double winnings) {
 		this.winnings = winnings;
 	}
-
+	
+	public void setInOutObjectStream(ObjectInputStream inputStream, ObjectOutputStream outputStream) {
+		this.inputStream = inputStream;
+		this.outputStream = outputStream;
+	}
+	
+	public ObjectOutputStream getObjectOutStream() {
+		return outputStream;
+	}
+	
+	public ObjectInputStream getObjectInStream() {
+		return inputStream;
+	}
+	
 }

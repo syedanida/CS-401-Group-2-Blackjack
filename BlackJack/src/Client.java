@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Client {
+public class Client{
 
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 6000;
@@ -10,54 +10,60 @@ public class Client {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private BufferedReader scanner;
+    private GUI gui;
+    
+    private String clientID;
+    private String clientDisplayName;
 
-    public Client() {
+    public Client() 
+    {
         scanner = new BufferedReader(new InputStreamReader(System.in));
+        gui = new GUI(this);
     }
 
-    public void connectToServer() {
+    public void connectToServer() 
+    {
         try {
-            // Connect to the server
             socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
-            
-            verifyUser();
-            handleUserOptions();
+            System.out.println("Server connected: " + socket);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
-    private void verifyUser() {
+    public void verifyUser(String username, String password) 
+    {
         try {
         	boolean authenticated = false;
-        	while (!authenticated){
-            // Ask the user for user ID and password
-            System.out.println("Enter your user ID:");
-            String userId = scanner.readLine();
-            System.out.println("Enter your password:");
-            String password = scanner.readLine();
-
-            // Create a LOGIN message with userId and password as payload
-            Message loginMessage = new Message(Message.MessageType.LOGIN, userId, password);
+        	
+        	// Create a LOGIN message with username and password
+            Message loginMessage = new Message(MessageType.LOGIN, username, password);
             sendMessage(loginMessage);
+            System.out.println("Requesting login: " + username + ", " + password);
 
             // Wait for the server response (authentication status)
             String authenticationResponse = (String) inputStream.readObject();
             System.out.println(authenticationResponse);
             
            if(authenticationResponse.equals("Authentication successful. You are now connected.")) {
+        	   Message dataResponse = (Message) inputStream.readObject();
+        	   clientDisplayName = dataResponse.getDisplayName();
+        	   clientID = dataResponse.getUserId();
+        	   System.out.println("User: " + clientDisplayName);
+        	   System.out.println("ID: " + clientID);
         	   authenticated = true;
+        	   clientDisplayName = username;
+        	   gui.loginSuccess();
         	   return;
            	}
-        	}
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-private void handleUserOptions() {
+    private void handleUserOptions() {
 	
             System.out.println("Select an option:");
             System.out.println("1. Find a table");
@@ -89,12 +95,13 @@ private void handleUserOptions() {
         }
     }
 
-    private void handleFindTable() {
-        sendMessage(new Message(Message.MessageType.FIND_TABLE, null, null));
+    void handleFindTable() {
+        sendMessage(new Message(MessageType.FIND_TABLE, null, null));
+        System.out.println("Finding a table.");
     }
 
     private void handleBankDetails() {
-        sendMessage(new Message(Message.MessageType.BANK_DETAILS, null, null));
+        sendMessage(new Message(MessageType.BANK_DETAILS, null, null));
         try {
         	for (int i = 0;i < 5; i++) {
                 String response = (String) inputStream.readObject();
@@ -108,7 +115,6 @@ private void handleUserOptions() {
         		handleWithdraw();
         	}
         	if (answer.equals("3"))
-        		sendMessage(new Message(Message.MessageType.MAIN_MENU, null, null));
         		handleUserOptions();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -116,14 +122,14 @@ private void handleUserOptions() {
     }
     
     private void handleDeposit() {
-    	sendMessage(new Message(Message.MessageType.DEPOSIT, null, null));
+    	sendMessage(new Message(MessageType.DEPOSIT, null, null));
 		String response;
 		try {
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String depositAmount = scanner.readLine();
 			int intNumber = Integer.parseInt(depositAmount);
-			sendMessage(new Message(Message.MessageType.DEPOSIT, null, null, intNumber));
+			sendMessage(new Message(MessageType.DEPOSIT, null, null, intNumber));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			handleUserOptions();
@@ -135,14 +141,14 @@ private void handleUserOptions() {
     }
     
     private void handleWithdraw() {
-    	sendMessage(new Message(Message.MessageType.WITHDRAW, null, null));
+    	sendMessage(new Message(MessageType.WITHDRAW, null, null));
 		String response;
 		try {
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String withdrawAmount = scanner.readLine();
 			int intNumber = Integer.parseInt(withdrawAmount);
-			sendMessage(new Message(Message.MessageType.WITHDRAW, null, null, intNumber, true));
+			sendMessage(new Message(MessageType.WITHDRAW, null, null, intNumber, true));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			handleUserOptions();
@@ -154,7 +160,7 @@ private void handleUserOptions() {
     }
 
     private void handleChangeSettings() {
-        sendMessage(new Message(Message.MessageType.SETTINGS, null, null));
+        sendMessage(new Message(MessageType.SETTINGS, null, null));
         try {
         	for (int i = 0;i < 5; i++) {
                 String response = (String) inputStream.readObject();
@@ -168,7 +174,6 @@ private void handleUserOptions() {
         		changePassword();
         	}
         	if (answer.equals("3"))
-        		sendMessage(new Message(Message.MessageType.MAIN_MENU, null, null));
         		handleUserOptions();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -176,13 +181,13 @@ private void handleUserOptions() {
     }
     
     private void changeDisplayName() {
-        sendMessage(new Message(Message.MessageType.CHANGE_NAME, null, null));
+        sendMessage(new Message(MessageType.CHANGE_NAME, null, null));
         String response;
 		try {
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String newDisplayName = scanner.readLine();
-			sendMessage(new Message(Message.MessageType.CHANGE_NAME, null, null, newDisplayName, null));
+			sendMessage(new Message(MessageType.CHANGE_NAME, null, null, newDisplayName, null));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			handleUserOptions();
@@ -194,13 +199,13 @@ private void handleUserOptions() {
     }
     
     private void changePassword() {
-        sendMessage(new Message(Message.MessageType.CHANGE_PASSWORD, null, null));
+        sendMessage(new Message(MessageType.CHANGE_PASSWORD, null, null));
         String response;
 		try {
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			String newPassword = scanner.readLine();
-			sendMessage(new Message(Message.MessageType.CHANGE_PASSWORD, null, null, null, newPassword));
+			sendMessage(new Message(MessageType.CHANGE_PASSWORD, null, null, null, newPassword));
 			response = (String) inputStream.readObject();
 			System.out.println(response);
 			handleUserOptions();
@@ -211,14 +216,13 @@ private void handleUserOptions() {
 		}
     }
     
-    private void handleLogout() {
+    public void handleLogout() {
         try {
-            outputStream.writeObject(new Message(Message.MessageType.LOGOUT, null, null));
+            outputStream.writeObject(new Message(MessageType.LOGOUT, clientDisplayName, null));
             // Check if the server has responded or handle accordingly
-            String logoutResponse = (String) inputStream.readObject();
-            System.out.println(logoutResponse);
+            String loginResponse = (String) inputStream.readObject();
+            System.out.println(loginResponse);
         } catch (IOException | ClassNotFoundException e) {
-            // Handle IOException and ClassNotFoundException
             e.printStackTrace();
         } finally {
             // Ensure resources are properly closed, even in case of exceptions
@@ -243,6 +247,7 @@ private void handleUserOptions() {
         }
     }
 
+
     private void sendMessage(Message message) {
         try {
             outputStream.writeObject(message);
@@ -254,5 +259,7 @@ private void handleUserOptions() {
     public static void main(String[] args) {
         Client client = new Client();
         client.connectToServer();
+        
+        
     }
 }

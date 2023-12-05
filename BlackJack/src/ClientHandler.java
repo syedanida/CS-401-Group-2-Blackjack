@@ -12,7 +12,7 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket clientSocket, Server server) {
         this.clientSocket = clientSocket;
         this.server = server;
-
+        
         try {
         	outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             inputStream = new ObjectInputStream(clientSocket.getInputStream());
@@ -25,18 +25,16 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
         	boolean pass = false;
-        	while (!pass) {
-        		Message receivedMessage = (Message) inputStream.readObject();
-            	pass = handleLogin(receivedMessage);
-        	}
+        	Message receivedMessage = (Message) inputStream.readObject();
+        	pass = handleLogin(receivedMessage);
+        	
         	
         	// Continuously handle client messages
             while (true) {
             	
             	Message clientMessage = (Message) inputStream.readObject();
             	// Check for log out message
-            	if(clientMessage.getType() == Message.MessageType.LOGOUT) {
-                    outputStream.writeObject("Logout successful. Goodbye!");
+            	if(clientMessage.getType() == MessageType.LOGOUT) {
             		break;
             	} else {
             		// Process the received message
@@ -79,10 +77,13 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private boolean handleLogin(Message message) throws IOException {
+    private boolean handleLogin(Message message) throws IOException 
+    {
         String userId = message.getUserId();
         String password = message.getPassword();
         boolean verified = false;
+        
+        System.out.println("Client login request: " + userId + ", " + password);
 
         if (server.verifyCredentials(userId, password)) {
             player = server.getPlayer(userId);
@@ -121,12 +122,9 @@ public class ClientHandler implements Runnable {
                     // Withdraw
                     handleWithdraw();
                     break;
-                case MAIN_MENU:
-                	// Return to main menu
-                	return;
                 default:
                     // Invalid choice
-                    outputStream.writeObject("Invalid option. Please try again.");
+                    outputStream.writeObject("Invalid option. Please try again. bankdetails");
                     break;
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -153,12 +151,9 @@ public class ClientHandler implements Runnable {
                     // Withdraw
                     changePassword();
                     break;
-                case MAIN_MENU:
-                	// Return to main menu
-                	return;
                 default:
                     // Invalid choice
-                    outputStream.writeObject("Invalid option. Please try again.");
+                    outputStream.writeObject("Invalid option. Please try again. handlesettings");
                     break;
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -176,9 +171,6 @@ public class ClientHandler implements Runnable {
 
             // Perform the deposit
             player.deposit(receivedMessage.getDepositAmount());
-            
-            // Save changes to data file
-            server.savePlayerDataToFile();
 
             // Notify the user about the successful deposit
             outputStream.writeObject("Deposit successful. Your new balance: " + player.getBalance());
@@ -197,9 +189,6 @@ public class ClientHandler implements Runnable {
 
             // Perform the withdrawal
             player.withdraw(receivedMessage.getWithdrawAmount());
-            
-            // Save changes to data file
-            server.savePlayerDataToFile();
 
             // Notify the user about the result of the withdrawal
             outputStream.writeObject("Withdrawal successful. Your new balance: " + player.getBalance());
@@ -218,9 +207,6 @@ public class ClientHandler implements Runnable {
 
             // Perform password change
             player.setPassword(receivedMessage.getNewPassword());
-            
-            // Save changes to data file
-            server.savePlayerDataToFile();
 
             // Notify the user about the password change
             outputStream.writeObject("Your password has been changed successfully!");
@@ -240,9 +226,6 @@ public class ClientHandler implements Runnable {
 
             // Perform the display name change
             player.setDisplayName(receivedMessage.getNewUserName());
-            
-            // Save changes to data file
-            server.savePlayerDataToFile();
 
             // Notify the user about the result of the withdrawal
             outputStream.writeObject("Display name change succesful. Your new display name: " + player.getDisplayName());

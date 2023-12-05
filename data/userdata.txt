@@ -1,5 +1,4 @@
-user1,test,Hasnain,22182
-user2,password2,User Two,1500
-user5,password5,User Five,1800
-user3,password3,User Three,2000
-user4,password4,User Four,1200
+LUDJWE,password1,Enchantek,1000
+J7LCNH,password2,djones923,1500
+GMNCVH,password3,Hazzy,2000
+XMLK54,password4,nida,1200
